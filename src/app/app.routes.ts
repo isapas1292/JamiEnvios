@@ -8,7 +8,7 @@ import { ExperienceComponent } from './features/experience/experience.component'
 import { ContactComponent } from './features/contact/contact.component';
 import { NotFoundComponent } from './features/not-found/not-found.component';
 
-export const appRoutes: Routes = [
+export const routes: Routes = [
   {
     path: '',
     component: MainLayoutComponent,
@@ -23,3 +23,6 @@ export const appRoutes: Routes = [
   },
   { path: '**', component: NotFoundComponent, title: 'Página no encontrada | JamiEnvios' }
 ];
+
+
+export const appRoutes = routes;
