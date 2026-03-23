@@ -1,6 +1,25 @@
-import { bootstrapApplication } from '@angular/platform-browser';
-import { appConfig } from './app/app.config';
-import { App } from './app/app';
+import { Routes } from '@angular/router';
+import { MainLayoutComponent } from './app/core/layout/main-layout.component';
+import { HomeComponent } from './app/features/home/home.component';
+import { AboutComponent } from './app/features/about/about.component';
+import { HistoryComponent } from './app/features/history/history.component';
+import { ServicesComponent } from './app/features/services/services.component';
+import { ExperienceComponent } from './app/features/experience/experience.component';
+import { ContactComponent } from './app/features/contact/contact.component';
+import { NotFoundComponent } from './app/features/not-found/not-found.component';
 
-bootstrapApplication(App, appConfig)
-  .catch((err) => console.error(err));
+export const appRoutes: Routes = [
+  {
+    path: '',
+    component: MainLayoutComponent,
+    children: [
+      { path: '', component: HomeComponent, title: 'Inicio | JamiEnvios' },
+      { path: 'nosotros', component: AboutComponent, title: 'Nosotros | JamiEnvios' },
+      { path: 'historia', component: HistoryComponent, title: 'Historia | JamiEnvios' },
+      { path: 'servicios', component: ServicesComponent, title: 'Servicios | JamiEnvios' },
+      { path: 'experiencia', component: ExperienceComponent, title: 'Experiencia | JamiEnvios' },
+      { path: 'contacto', component: ContactComponent, title: 'Contacto | JamiEnvios' }
+    ]
+  },
+  { path: '**', component: NotFoundComponent, title: 'Página no encontrada | JamiEnvios' }
+];

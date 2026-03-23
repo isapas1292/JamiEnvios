@@ -1,0 +1,32 @@
+<section class="page-banner">
+    <div class="container page-banner-grid">
+      <div>
+        <span class="page-kicker">Historia</span>
+        <h1 class="page-title">Una evolución construida con constancia y experiencia</h1>
+        <p class="page-description">
+          La historia de JamiEnvios refleja crecimiento, adaptación al mercado y
+          compromiso continuo con sus clientes.
+        </p>
+      </div>
+  
+      <div class="page-panel">
+        <h3>Una ruta de crecimiento</h3>
+        <p>
+          La empresa fue ampliando sus operaciones y consolidando su propuesta de
+          valor dentro del transporte de mercancías hacia República Dominicana.
+        </p>
+      </div>
+    </div>
+  </section>
+  
+  <section class="section-space">
+    <div class="container timeline-wrap">
+      <article class="timeline-item" *ngFor="let item of timeline">
+        <div class="timeline-year">{{ item.year }}</div>
+        <div class="timeline-content">
+          <h3>{{ item.title }}</h3>
+          <p>{{ item.text }}</p>
+        </div>
+      </article>
+    </div>
+  </section>

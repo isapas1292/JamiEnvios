@@ -1,0 +1,45 @@
+<section class="page-banner">
+    <div class="container page-banner-grid">
+      <div>
+        <span class="page-kicker">Experiencia</span>
+        <h1 class="page-title">Compromiso, tiempos claros y visión de crecimiento</h1>
+        <p class="page-description">
+          Esta sección resume lo que da confianza: trayectoria, organización, tiempos
+          estimados y principios de servicio.
+        </p>
+      </div>
+  
+      <div class="page-panel">
+        <h3>Visión de futuro</h3>
+        <p>
+          Seguir mejorando el servicio y fortalecer la relación con los clientes
+          dentro de esta ruta logística.
+        </p>
+      </div>
+    </div>
+  </section>
+  
+  <section class="section-space">
+    <div class="container grid-3">
+      <article class="metric-card" *ngFor="let item of metrics">
+        <strong>{{ item.value }}</strong>
+        <span>{{ item.label }}</span>
+      </article>
+    </div>
+  </section>
+  
+  <section class="section-space">
+    <div class="container">
+      <div class="section-heading">
+        <span class="page-kicker">Principios</span>
+        <h2>Lo que sostiene nuestra forma de trabajar</h2>
+      </div>
+  
+      <div class="grid-3">
+        <article class="card-white" *ngFor="let item of principles">
+          <h3>{{ item.title }}</h3>
+          <p>{{ item.text }}</p>
+        </article>
+      </div>
+    </div>
+  </section>

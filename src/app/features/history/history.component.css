@@ -1,0 +1,45 @@
+.timeline-wrap {
+    display: grid;
+    gap: 18px;
+  }
+  
+  .timeline-item {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 18px;
+    align-items: start;
+  }
+  
+  .timeline-year {
+    background: linear-gradient(135deg, var(--red), var(--red-dark));
+    color: white;
+    border-radius: 18px;
+    padding: 16px;
+    text-align: center;
+    font-weight: 900;
+    box-shadow: var(--shadow);
+  }
+  
+  .timeline-content {
+    background: white;
+    border-radius: 18px;
+    padding: 24px;
+    box-shadow: var(--shadow);
+  }
+  
+  .timeline-content h3 {
+    margin: 0 0 8px;
+    color: var(--blue);
+  }
+  
+  .timeline-content p {
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.75;
+  }
+  
+  @media (max-width: 980px) {
+    .timeline-item {
+      grid-template-columns: 1fr;
+    }
+  }

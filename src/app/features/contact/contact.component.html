@@ -1,0 +1,85 @@
+<section class="page-banner">
+    <div class="container page-banner-grid">
+      <div>
+        <span class="page-kicker">Contacto</span>
+        <h1 class="page-title">Solicita información sobre tu próximo envío</h1>
+        <p class="page-description">
+          Completa el formulario y te ayudaremos con orientación, cotización y
+          detalles del servicio.
+        </p>
+      </div>
+  
+      <div class="page-panel">
+        <h3>Atención personalizada</h3>
+        <p>
+          Te acompañamos para que el proceso se sienta claro, cercano y fácil de entender.
+        </p>
+      </div>
+    </div>
+  </section>
+  
+  <section class="section-space">
+    <div class="container contact-grid">
+      <div class="page-panel-dark">
+        <span class="page-kicker">Contacto directo</span>
+        <h2>Estamos listos para ayudarte</h2>
+        <ul class="ul-clean contact-list">
+          <li><strong>Teléfono:</strong> +34 000 000 000</li>
+          <li><strong>Correo:</strong> hola&#64;jamienvios.com</li>
+          <li><strong>Ubicación:</strong> Ripollet, Barcelona</li>
+          <li><strong>Destino principal:</strong> República Dominicana</li>
+        </ul>
+      </div>
+  
+      <div class="page-panel">
+        <form (ngSubmit)="submitForm()" #contactForm="ngForm">
+          <div class="form-grid">
+            <div class="field">
+              <label for="name">Nombre</label>
+              <input id="name" name="name" [(ngModel)]="model.name" required />
+            </div>
+  
+            <div class="field">
+              <label for="email">Correo electrónico</label>
+              <input id="email" name="email" type="email" [(ngModel)]="model.email" required />
+            </div>
+  
+            <div class="field">
+              <label for="phone">Teléfono</label>
+              <input id="phone" name="phone" [(ngModel)]="model.phone" />
+            </div>
+  
+            <div class="field">
+              <label for="service">Servicio de interés</label>
+              <select id="service" name="service" [(ngModel)]="model.service" required>
+                <option value="">Selecciona una opción</option>
+                <option value="cajas">Cajas y paquetes</option>
+                <option value="motores">Motores y repuestos</option>
+                <option value="mudanza">Mudanzas</option>
+                <option value="puerta">Puerta a puerta</option>
+              </select>
+            </div>
+  
+            <div class="field full">
+              <label for="message">Mensaje</label>
+              <textarea
+                id="message"
+                name="message"
+                rows="6"
+                [(ngModel)]="model.message"
+                required
+              ></textarea>
+            </div>
+          </div>
+  
+          <button class="btn btn-primary" type="submit" [disabled]="contactForm.invalid">
+            Enviar solicitud
+          </button>
+  
+          <p class="success-message" *ngIf="submitted">
+            Tu solicitud fue registrada correctamente.
+          </p>
+        </form>
+      </div>
+    </div>
+  </section>

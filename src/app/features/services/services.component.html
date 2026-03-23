@@ -1,0 +1,49 @@
+<section class="page-banner">
+    <div class="container page-banner-grid">
+      <div>
+        <span class="page-kicker">Servicios</span>
+        <h1 class="page-title">Soluciones completas para tus envíos marítimos</h1>
+        <p class="page-description">
+          Organizamos nuestros servicios para que el cliente entienda fácilmente
+          cómo podemos ayudarle según su tipo de envío.
+        </p>
+      </div>
+  
+      <div class="page-panel">
+        <h3>Servicio flexible</h3>
+        <p>
+          Atendemos desde cajas y paquetes hasta mudanzas, motores y carga comercial.
+        </p>
+      </div>
+    </div>
+  </section>
+  
+  <section class="section-space">
+    <div class="container">
+      <div class="grid-3">
+        <article class="card-white service-box" *ngFor="let service of services">
+          <div class="service-box-icon">{{ service.icon }}</div>
+          <h3>{{ service.title }}</h3>
+          <p>{{ service.text }}</p>
+        </article>
+      </div>
+    </div>
+  </section>
+  
+  <section class="section-space">
+    <div class="container grid-2">
+      <div class="page-panel-dark">
+        <span class="page-kicker">Proceso</span>
+        <h2>Cómo trabajamos cada envío</h2>
+        <p>
+          Buscamos que el proceso se sienta ordenado, acompañado y fácil de seguir.
+        </p>
+      </div>
+  
+      <div class="page-panel">
+        <ul class="process-list">
+          <li *ngFor="let step of steps">{{ step }}</li>
+        </ul>
+      </div>
+    </div>
+  </section>

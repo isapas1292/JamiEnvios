@@ -1,0 +1,25 @@
+.service-box {
+    height: 100%;
+  }
+  
+  .service-box-icon {
+    width: 58px;
+    height: 58px;
+    border-radius: 16px;
+    background: #f2f5fa;
+    display: grid;
+    place-items: center;
+    font-size: 1.45rem;
+    margin-bottom: 16px;
+  }
+  
+  .process-list {
+    margin: 0;
+    padding-left: 20px;
+    color: var(--muted);
+  }
+  
+  .process-list li {
+    margin-bottom: 14px;
+    line-height: 1.75;
+  }

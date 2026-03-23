@@ -1,0 +1,120 @@
+<section class="home-hero">
+    <div class="hero-ship"></div>
+    <div class="hero-fade"></div>
+  
+    <div class="container hero-grid">
+      <div></div>
+  
+      <div class="hero-copy">
+        <div class="hero-top">
+          <div>
+            <span class="page-kicker">Transporte marítimo internacional</span>
+            <h1>Envía tu carga con confianza total</h1>
+            <p>
+              Soluciones integrales en transporte marítimo internacional entre
+              España y República Dominicana.
+            </p>
+  
+            <div class="hero-actions">
+              <a class="btn btn-primary" routerLink="/contacto">Solicita Cotización</a>
+              <a class="btn btn-secondary" routerLink="/servicios">Ver servicios</a>
+            </div>
+          </div>
+  
+          <img src="assets/images/jami-logo.png" alt="JamiEnvios" class="hero-logo" />
+        </div>
+      </div>
+    </div>
+  
+    <div class="container hero-cards">
+      <article class="value-card" *ngFor="let item of values">
+        <div class="icon-badge" [ngClass]="item.color">{{ item.icon }}</div>
+        <h3>{{ item.title }}</h3>
+        <p>{{ item.text }}</p>
+      </article>
+    </div>
+  </section>
+  
+  <section class="section-space">
+    <div class="container company-section">
+      <div class="section-heading left-heading">
+        <h2>Especialistas en envíos entre España y República Dominicana</h2>
+      </div>
+  
+      <div class="company-grid">
+        <div class="about-card">
+          <div class="about-card-inner">
+            <span class="page-kicker kicker-light">Sobre Nosotros</span>
+            <h3>Servicio profesional adaptado a tus necesidades</h3>
+            <p>
+              En Grupo JAMI Envíos somos una empresa especializada en el transporte
+              internacional de mercancías desde España hacia República Dominicana.
+              Con años de experiencia, gestionamos el envío seguro y eficiente de
+              tus productos.
+            </p>
+  
+            <a class="btn btn-primary" routerLink="/nosotros">Más Sobre Nosotros</a>
+          </div>
+        </div>
+  
+        <div class="company-photo">
+          <img src="assets/images/about-team.jpg" alt="Equipo JAMI" />
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <section class="section-space services-section">
+    <div class="container">
+      <div class="section-heading">
+        <h2>Nuestros Servicios</h2>
+        <p>Soluciones completas para tus envíos marítimos</p>
+      </div>
+  
+      <div class="services-grid">
+        <article class="service-card" *ngFor="let service of services">
+          <div class="service-icon">{{ service.icon }}</div>
+          <div>
+            <h3>{{ service.title }}</h3>
+            <p>{{ service.text }}</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+  
+  <section class="section-space">
+    <div class="container">
+      <div class="section-heading">
+        <h2>Conoce más de nuestra empresa</h2>
+        <p>
+          Organizamos la información en páginas separadas para que la web se vea
+          más clara, más completa y más profesional.
+        </p>
+      </div>
+  
+      <div class="sections-grid">
+        <article class="section-card" *ngFor="let item of sections">
+          <h3>{{ item.title }}</h3>
+          <p>{{ item.text }}</p>
+          <a class="text-link" [routerLink]="item.link">Ver sección →</a>
+        </article>
+      </div>
+    </div>
+  </section>
+  
+  <section class="section-space">
+    <div class="container">
+      <div class="cta-band home-cta">
+        <div>
+          <span class="page-kicker kicker-light">Haz tu envío</span>
+          <h2>Una web más moderna, con la misma esencia visual de JAMI</h2>
+          <p>
+            Ahora todas las páginas pueden mantener la línea corporativa azul, roja y dorada.
+          </p>
+        </div>
+  
+        <a class="btn btn-primary" routerLink="/contacto">Contactar ahora</a>
+      </div>
+    </div>
+  </section>

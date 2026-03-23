@@ -1,0 +1,27 @@
+.about-image-panel img {
+    width: 100%;
+    height: 100%;
+    min-height: 300px;
+    object-fit: cover;
+    border-radius: 18px;
+  }
+  
+  .about-cta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+  }
+  
+  .cta-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  
+  @media (max-width: 980px) {
+    .about-cta {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
