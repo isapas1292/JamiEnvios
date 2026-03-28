@@ -1,0 +1,135 @@
+<section class="auth-page">
+    <div class="container auth-grid">
+      <div class="register-card">
+        <div class="auth-card-header">
+          <span class="page-kicker">Crear cuenta</span>
+          <h2>Regístrate en JamiEnvios</h2>
+          <p>
+            Completa tus datos para crear tu cuenta y comenzar a gestionar tus envíos.
+          </p>
+        </div>
+  
+        <form (ngSubmit)="submitForm()" #registerForm="ngForm" class="auth-form">
+          <div class="form-grid">
+            <div class="field">
+              <label for="fullName">Nombre completo</label>
+              <input
+                id="fullName"
+                name="fullName"
+                [(ngModel)]="model.fullName"
+                required
+                placeholder="Tu nombre completo"
+              />
+            </div>
+  
+            <div class="field">
+              <label for="email">Correo electrónico</label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                [(ngModel)]="model.email"
+                required
+                placeholder="correo@ejemplo.com"
+              />
+            </div>
+  
+            <div class="field">
+              <label for="phone">Teléfono</label>
+              <input
+                id="phone"
+                name="phone"
+                [(ngModel)]="model.phone"
+                required
+                placeholder="+34 000 000 000"
+              />
+            </div>
+  
+            <div class="field">
+              <label for="password">Contraseña</label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                [(ngModel)]="model.password"
+                required
+                placeholder="********"
+              />
+            </div>
+  
+            <div class="field full">
+              <label for="confirmPassword">Confirmar contraseña</label>
+              <input
+                id="confirmPassword"
+                name="confirmPassword"
+                type="password"
+                [(ngModel)]="model.confirmPassword"
+                required
+                placeholder="********"
+              />
+            </div>
+          </div>
+  
+          <label class="terms-box">
+            <input
+              type="checkbox"
+              name="agreeTerms"
+              [(ngModel)]="model.agreeTerms"
+              required
+            />
+            <span>Acepto los términos y condiciones</span>
+          </label>
+  
+          <button class="btn btn-primary auth-submit" type="submit" [disabled]="registerForm.invalid">
+            Crear cuenta
+          </button>
+  
+          <p class="success-message" *ngIf="submitted">
+            Tu registro fue enviado correctamente.
+          </p>
+        </form>
+  
+        <div class="auth-footer">
+          <span>¿Ya tienes cuenta?</span>
+          <a routerLink="/login">Iniciar sesión</a>
+        </div>
+      </div>
+  
+      <div class="register-copy">
+        <div class="register-panel page-panel-dark">
+          <span class="page-kicker">Únete a JAMI</span>
+          <h2>Una cuenta para gestionar tu experiencia de envío</h2>
+          <p>
+            Regístrate para centralizar tus datos, agilizar futuras solicitudes y
+            mantener una relación más directa con la empresa.
+          </p>
+  
+          <div class="register-points">
+            <article class="point-item">
+              <div class="icon-badge icon-blue">1</div>
+              <div>
+                <h3>Perfil organizado</h3>
+                <p>Guarda tus datos para procesos más rápidos y cómodos.</p>
+              </div>
+            </article>
+  
+            <article class="point-item">
+              <div class="icon-badge icon-red">2</div>
+              <div>
+                <h3>Solicitudes más simples</h3>
+                <p>Facilita cotizaciones y futuras interacciones con la plataforma.</p>
+              </div>
+            </article>
+  
+            <article class="point-item">
+              <div class="icon-badge icon-yellow">3</div>
+              <div>
+                <h3>Experiencia moderna</h3>
+                <p>Una interfaz alineada con la identidad visual corporativa de JAMI.</p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>

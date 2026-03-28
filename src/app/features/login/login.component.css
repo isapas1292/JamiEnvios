@@ -1,0 +1,140 @@
+.auth-page {
+    padding: 54px 0 70px;
+    background:
+      linear-gradient(180deg, #f7f8fa 0%, #eef2f6 100%);
+  }
+  
+  .auth-grid {
+    display: grid;
+    grid-template-columns: 1fr 0.95fr;
+    gap: 28px;
+    align-items: stretch;
+  }
+  
+  .auth-copy {
+    padding: 24px 6px 24px 0;
+  }
+  
+  .auth-benefits {
+    display: grid;
+    gap: 16px;
+    margin-top: 28px;
+  }
+  
+  .mini-benefit {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    background: rgba(255, 255, 255, 0.72);
+    border: 1px solid rgba(24, 63, 122, 0.06);
+    border-radius: 18px;
+    padding: 18px;
+    box-shadow: var(--shadow);
+  }
+  
+  .mini-benefit .icon-badge {
+    flex-shrink: 0;
+  }
+  
+  .mini-benefit h3 {
+    margin: 0 0 6px;
+    color: var(--blue);
+    font-size: 1rem;
+  }
+  
+  .mini-benefit p {
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+  
+  .auth-card {
+    background: white;
+    border-radius: 28px;
+    padding: 30px;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid rgba(24, 63, 122, 0.06);
+  }
+  
+  .auth-card-header h2 {
+    margin: 10px 0 8px;
+    color: var(--blue);
+    font-size: 2rem;
+    line-height: 1.05;
+  }
+  
+  .auth-card-header p {
+    color: var(--muted);
+    line-height: 1.7;
+  }
+  
+  .auth-form {
+    margin-top: 22px;
+  }
+  
+  .auth-form .field + .field {
+    margin-top: 18px;
+  }
+  
+  .auth-row {
+    margin: 16px 0 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  
+  .remember-box {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  
+  .remember-box input {
+    width: auto;
+  }
+  
+  .forgot-link {
+    color: var(--red);
+    text-decoration: none;
+    font-weight: 700;
+  }
+  
+  .auth-submit {
+    width: 100%;
+  }
+  
+  .success-message {
+    margin-top: 14px;
+    color: #17814a;
+    font-weight: 700;
+  }
+  
+  .auth-footer {
+    margin-top: 22px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    color: var(--muted);
+  }
+  
+  .auth-footer a {
+    color: var(--blue);
+    font-weight: 800;
+    text-decoration: none;
+  }
+  
+  @media (max-width: 980px) {
+    .auth-grid {
+      grid-template-columns: 1fr;
+    }
+  
+    .auth-copy {
+      padding-right: 0;
+    }
+  }
