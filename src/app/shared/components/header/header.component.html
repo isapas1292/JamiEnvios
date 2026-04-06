@@ -1,7 +1,7 @@
 <header class="header">
   <div class="container nav-wrapper">
     <a routerLink="/" class="brand" (click)="closeMenu()">
-      <img src="assets/images/jami-logo.png" alt="JamiEnvios" class="brand-logo" />
+      <img src="/JamiEnviosLogo1.png" alt="JamiEnvios" class="brand-logo" />
       <div class="brand-copy">
         <span class="brand-title">JamiEnvios</span>
         <span class="brand-subtitle">Envíos España - República Dominicana</span>
@@ -27,8 +27,12 @@
       <a routerLink="/servicios" routerLinkActive="active" (click)="closeMenu()">Servicios</a>
       <a routerLink="/experiencia" routerLinkActive="active" (click)="closeMenu()">Experiencia</a>
       <a routerLink="/contacto" routerLinkActive="active" (click)="closeMenu()">Contacto</a>
-      <a routerLink="/login" routerLinkActive="active" (click)="closeMenu()">Login</a>
-      <a class="cta-link" routerLink="/registro" (click)="closeMenu()">Registrarse</a>
+      <a routerLink="/login" class="user-icon-link" routerLinkActive="active" (click)="closeMenu()" title="Iniciar sesión">
+        <svg class="user-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/>
+          <path d="M 4 20 Q 4 14 12 14 Q 20 14 20 20" stroke="currentColor" stroke-width="2" fill="none"/>
+        </svg>
+      </a>
     </nav>
   </div>
 </header>

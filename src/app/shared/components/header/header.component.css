@@ -24,7 +24,7 @@
   }
   
   .brand-logo {
-    width: 76px;
+    width: 120px;
     height: auto;
     object-fit: contain;
   }
@@ -68,10 +68,30 @@
     background: rgba(24, 63, 122, 0.08);
   }
   
-  .nav .cta-link {
-    background: linear-gradient(135deg, var(--red), var(--red-dark));
-    color: white;
-    box-shadow: 0 10px 20px rgba(229, 57, 59, 0.2);
+  .user-icon-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0 !important;
+    border-radius: 50%;
+    background: white;
+    color: var(--blue);
+    box-shadow: 0 4px 12px rgba(24, 63, 122, 0.06);
+    transition: 0.22s ease;
+    border: 1px solid rgba(24, 63, 122, 0.06);
+  }
+
+  .user-icon-link:hover {
+    background: rgba(24, 63, 122, 0.06);
+    transform: scale(1.05);
+  }
+
+  .user-icon {
+    width: 22px;
+    height: 22px;
+    display: block;
   }
   
   .menu-btn {

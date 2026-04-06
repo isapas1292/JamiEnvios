@@ -11,7 +11,7 @@
     top: 0;
     bottom: 118px;
     width: 65%;
-    background: url('/src/assets/images/hero-ship.png') center center / cover no-repeat;
+    background: url('/hero-ship.png') center center / cover no-repeat;
     border-bottom-right-radius: 90px;
   }
   
