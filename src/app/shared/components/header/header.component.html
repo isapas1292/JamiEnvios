@@ -24,6 +24,22 @@
         Contacto
       </a>
 
+      @if (isLoggedIn) {
+        <a routerLink="/perfil" class="user-icon-link" aria-label="Mi perfil" title="Mi perfil" (click)="closeMenu()">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="user-icon">
+            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </a>
+      } @else {
+        <a routerLink="/login" class="user-icon-link" aria-label="Iniciar sesión o registrarse" title="Iniciar sesión" (click)="closeMenu()">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="user-icon">
+            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </a>
+      }
+
       <a class="cta-link" routerLink="/contacto" (click)="closeMenu()">
         Solicita Cotización
       </a>

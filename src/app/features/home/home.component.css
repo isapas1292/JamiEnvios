@@ -1,6 +1,6 @@
 .home-hero {
   position: relative;
-  padding: 24px 0 34px;
+  padding: 24px 0 40px;
   background: linear-gradient(180deg, #f7f7f8 0%, #f1f3f6 100%);
   overflow: hidden;
 }
@@ -9,23 +9,29 @@
   position: absolute;
   left: 0;
   top: 0;
-  bottom: 118px;
+  bottom: 0;
   width: 65%;
   background: url('/hero-ship.png') center center / cover no-repeat;
-  border-bottom-right-radius: 90px;
 }
 
 .hero-fade {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(90deg, rgba(255, 255, 255, 0.08) 26%, rgba(255, 255, 255, 0.88) 56%, rgba(242, 244, 247, 1) 82%);
+    linear-gradient(90deg, transparent 26%, rgba(255, 255, 255, 0.88) 56%, rgba(242, 244, 247, 1) 82%);
+}
+
+.hero-fade::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 75%, rgba(242, 244, 247, 1) 100%);
 }
 
 .hero-grid {
   position: relative;
   z-index: 2;
-  min-height: 430px;
+  min-height: 450px;
   display: grid;
   grid-template-columns: 1fr 0.95fr;
   align-items: center;
@@ -76,7 +82,7 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 18px;
-  margin-top: -18px;
+  margin-top: 15px;
 }
 
 .value-card {

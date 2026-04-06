@@ -10,6 +10,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 })
 export class HeaderComponent {
   mobileMenuOpen = false;
+  isLoggedIn = false; // TODO: Conectar con un servicio de autenticación
 
   toggleMenu(): void {
     this.mobileMenuOpen = !this.mobileMenuOpen;
