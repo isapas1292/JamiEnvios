@@ -37,10 +37,10 @@ export class HomeComponent {
       title: 'Envío de Cajas y Paquetes',
       text: 'Transporte seguro y eficaz de todo tipo de cajas y paquetes.'
     },
-    {
-      icon: '🧰',
-      title: 'Transporte de Motores',
-      text: 'Especialistas en envío de motores y repuestos mecánicos.'
+     {
+      icon: '📋',
+      title: 'Documentación Aduanera',
+      text: 'Gestión completa de trámites y documentos para tus envíos internacionales.'
     },
     {
       icon: '🏠',

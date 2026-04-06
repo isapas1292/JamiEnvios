@@ -16,9 +16,9 @@ export class ServicesComponent {
       text: 'Transporte organizado y seguro para mercancías personales y comerciales.'
     },
     {
-      icon: '⚙️',
-      title: 'Transporte de motores y repuestos',
-      text: 'Servicio pensado para piezas y componentes que requieren cuidado durante el traslado.'
+      icon: '📋',
+      title: 'Documentación Aduanera',
+      text: 'Gestión completa de trámites y documentos para tus envíos internacionales.'
     },
     {
       icon: '🏠',
@@ -39,6 +39,16 @@ export class ServicesComponent {
       icon: '🛢️',
       title: 'Tanques y otros envíos especiales',
       text: 'Gestión de distintos formatos de mercancía dentro de la misma operación logística.'
+    },
+     {
+      icon: '🧠',
+      title: 'Asesoría Logística',
+      text: 'Te ayudamos a planificar y optimizar tus procesos de envío.'
+    },
+    {
+      icon: '📊',
+      title: 'Carga Consolidada',
+      text: 'Optimiza tus envíos agrupando mercancía para reducir costos.'
     }
   ];
 
