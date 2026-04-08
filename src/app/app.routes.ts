@@ -22,7 +22,8 @@ export const routes: Routes = [
       { path: 'experiencia', component: ExperienceComponent, title: 'Experiencia | JamiEnvios' },
       { path: 'contacto', component: ContactComponent, title: 'Contacto | JamiEnvios' },
       { path: 'login', component: LoginComponent, title: 'Iniciar sesión | JamiEnvios' },
-      { path: 'registro', component: RegisterComponent, title: 'Registrarse | JamiEnvios' }
+      { path: 'registro', component: RegisterComponent, title: 'Registrarse | JamiEnvios' },
+      { path: 'rastreo', loadComponent: () => import('./features/tracking/tracking').then(m => m.Tracking), title: 'Rastreo de envíos | JamiEnvios' }
     ]
   },
   { path: '**', component: NotFoundComponent, title: 'Página no encontrada | JamiEnvios' }

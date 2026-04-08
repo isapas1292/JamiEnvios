@@ -1,1 +1,41 @@
-<p>tracking works!</p>
+<div class="tracking-page">
+  <div class="tracking-wrapper">
+    <!-- Buscador -->
+    <div class="search-section">
+      <h2>Rastrea tu Envío</h2>
+      <p>Ingresa tu número de guía para conocer el estado actual de tu paquete.</p>
+      
+      <div class="search-box">
+        <input 
+          type="text" 
+          [(ngModel)]="searchQuery" 
+          (keyup.enter)="onSearch()"
+          placeholder="Ej: JAMI001" />
+        <button class="btn-search" (click)="onSearch()">Buscar</button>
+      </div>
+    </div>
+
+    <!-- Cargando (Simulado) -->
+    <div *ngIf="isSearching" class="loading-state">
+      Buscando información de tu paquete...
+    </div>
+
+    <!-- Resultados Visuales -->
+    <div *ngIf="hasResult" class="result-section">
+      <div class="result-header">
+        <h3>Tu Paquete: <span>{{ searchQuery || 'JAMI001' | uppercase }}</span></h3>
+      </div>
+
+      <div class="timeline">
+        <div class="timeline-line">
+          <div class="timeline-line-progress"></div>
+        </div>
+
+        <div class="timeline-step" *ngFor="let step of timelineSteps" [class.active]="step.active">
+          <div class="step-icon">{{ step.icon }}</div>
+          <div class="step-text">{{ step.text }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
