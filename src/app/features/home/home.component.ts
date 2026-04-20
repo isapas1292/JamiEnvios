@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
@@ -9,7 +9,46 @@ import { RouterLink } from '@angular/router';
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit, OnDestroy {
+  slides = [
+    '/hero-ship.png',
+    '/hero-ship.png',
+    '/hero-ship.png',
+    '/hero-ship.png'
+  ];
+  currentSlideIndex = 0;
+  slideInterval: any;
+
+  ngOnInit() {
+    this.startSlider();
+  }
+
+  ngOnDestroy() {
+    this.stopSlider();
+  }
+
+  startSlider() {
+    this.stopSlider();
+    this.slideInterval = setInterval(() => {
+      this.nextSlide();
+    }, 5000);
+  }
+
+  stopSlider() {
+    if (this.slideInterval) {
+      clearInterval(this.slideInterval);
+    }
+  }
+
+  nextSlide() {
+    this.currentSlideIndex = (this.currentSlideIndex + 1) % this.slides.length;
+  }
+
+  setSlide(index: number) {
+    this.currentSlideIndex = index;
+    this.startSlider();
+  }
+
   values = [
     {
       icon: '✓',

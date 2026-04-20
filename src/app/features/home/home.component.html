@@ -1,6 +1,23 @@
 <section class="home-hero">
-  <div class="hero-ship"></div>
+  <div class="slider-container">
+    <div *ngFor="let slide of slides; let i = index" 
+         class="hero-ship" 
+         [ngClass]="{'active': i === currentSlideIndex}"
+         [style.backgroundImage]="'url(' + slide + ')'">
+    </div>
+  </div>
+
   <div class="hero-fade"></div>
+
+  <!-- Slider Indicators -->
+  <div class="slider-indicators">
+    <button *ngFor="let slide of slides; let i = index" 
+            class="indicator-dot" 
+            [ngClass]="{'active': i === currentSlideIndex}" 
+            (click)="setSlide(i)"
+            aria-label="Slide">
+    </button>
+  </div>
 
   <div class="container hero-grid">
     <div></div>
