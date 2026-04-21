@@ -1,6 +1,6 @@
 .home-hero {
   position: relative;
-  padding: 24px 0 40px;
+  padding: 24px 0 70px;
   background: linear-gradient(180deg, #f7f7f8 0%, #f1f3f6 100%);
   overflow: hidden;
 }
@@ -27,36 +27,58 @@
   opacity: 1;
 }
 
-.slider-indicators {
+.slider-controls {
   position: absolute;
-  bottom: 40px;
-  left: 32.5%;
+  bottom: 20px;
+  left: 50%;
   transform: translateX(-50%);
   display: flex;
+  align-items: center;
+  gap: 16px;
+  z-index: 10;
+}
+
+.slider-indicators {
+  display: flex;
   gap: 12px;
-  z-index: 5;
+}
+
+.slider-arrow {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(20, 40, 80, 0.4);
+  transition: all 0.3s ease;
+  border-radius: 50%;
+}
+
+.slider-arrow:hover {
+  color: var(--blue, #142850);
+  background: rgba(20, 40, 80, 0.05);
 }
 
 .indicator-dot {
-  width: 14px;
-  height: 14px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.4);
-  border: 2px solid transparent;
+  background: rgba(20, 40, 80, 0.15);
+  border: none;
   cursor: pointer;
   padding: 0;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 .indicator-dot:hover {
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(20, 40, 80, 0.3);
 }
 
 .indicator-dot.active {
-  background: #fff;
-  border-color: rgba(0, 0, 0, 0.1);
-  transform: scale(1.1);
+  background: var(--blue, #142850);
+  transform: scale(1.25);
 }
 
 .hero-fade {
