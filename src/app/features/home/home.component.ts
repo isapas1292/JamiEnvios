@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
@@ -12,12 +12,14 @@ import { RouterLink } from '@angular/router';
 export class HomeComponent implements OnInit, OnDestroy {
   slides = [
     '/hero-ship.png',
-    '/hero-ship.png',
-    '/hero-ship.png',
-    '/hero-ship.png'
+    '/hero-warehouse.png',
+    '/hero-plane.png',
+    '/hero-truck.png'
   ];
   currentSlideIndex = 0;
   slideInterval: any;
+
+  constructor(private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.startSlider();
@@ -31,7 +33,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.stopSlider();
     this.slideInterval = setInterval(() => {
       this.nextSlide();
-    }, 5000);
+    }, 4000);
   }
 
   stopSlider() {
@@ -42,11 +44,24 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   nextSlide() {
     this.currentSlideIndex = (this.currentSlideIndex + 1) % this.slides.length;
+    this.cdr.detectChanges();
+  }
+
+  nextSlideManual() {
+    this.nextSlide();
+    this.startSlider();
+  }
+
+  prevSlide() {
+    this.currentSlideIndex = (this.currentSlideIndex - 1 + this.slides.length) % this.slides.length;
+    this.startSlider();
+    this.cdr.detectChanges();
   }
 
   setSlide(index: number) {
     this.currentSlideIndex = index;
     this.startSlider();
+    this.cdr.detectChanges();
   }
 
   values = [
