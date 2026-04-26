@@ -33,7 +33,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.stopSlider();
     this.slideInterval = setInterval(() => {
       this.nextSlide();
-    }, 4000);
+    }, 2500);
   }
 
   stopSlider() {
