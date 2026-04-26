@@ -1,17 +1,84 @@
 .home-hero {
   position: relative;
-  padding: 24px 0 40px;
+  padding: 24px 0 70px;
   background: linear-gradient(180deg, #f7f7f8 0%, #f1f3f6 100%);
   overflow: hidden;
 }
 
-.hero-ship {
+.slider-container {
   position: absolute;
   left: 0;
   top: 0;
   bottom: 0;
   width: 65%;
-  background: url('/hero-ship.png') center center / cover no-repeat;
+}
+
+.hero-ship {
+  position: absolute;
+  inset: 0;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transition: opacity 1.2s ease-in-out;
+}
+
+.hero-ship.active {
+  opacity: 1;
+}
+
+.slider-controls {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  z-index: 10;
+}
+
+.slider-indicators {
+  display: flex;
+  gap: 12px;
+}
+
+.slider-arrow {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(20, 40, 80, 0.4);
+  transition: all 0.3s ease;
+  border-radius: 50%;
+}
+
+.slider-arrow:hover {
+  color: var(--blue, #142850);
+  background: rgba(20, 40, 80, 0.05);
+}
+
+.indicator-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(20, 40, 80, 0.15);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.3s ease;
+}
+
+.indicator-dot:hover {
+  background: rgba(20, 40, 80, 0.3);
+}
+
+.indicator-dot.active {
+  background: var(--blue, #142850);
+  transform: scale(1.25);
 }
 
 .hero-fade {
@@ -290,11 +357,18 @@
 }
 
 @media (max-width: 980px) {
-  .hero-ship {
+  .slider-container {
     width: 100%;
     bottom: auto;
     height: 280px;
     border-bottom-right-radius: 40px;
+    overflow: hidden;
+  }
+
+  .slider-indicators {
+    left: 50%;
+    top: 250px;
+    bottom: auto;
   }
 
   .hero-fade {

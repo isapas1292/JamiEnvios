@@ -1,6 +1,33 @@
 <section class="home-hero">
-  <div class="hero-ship"></div>
+  <div class="slider-container">
+    <div *ngFor="let slide of slides; let i = index" 
+         class="hero-ship" 
+         [ngClass]="{'active': i === currentSlideIndex}"
+         [style.backgroundImage]="'url(' + slide + ')'">
+    </div>
+  </div>
+
   <div class="hero-fade"></div>
+
+  <!-- Slider Indicators & Controls -->
+  <div class="slider-controls">
+    <button class="slider-arrow" (click)="prevSlide()" aria-label="Anterior">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+
+    <div class="slider-indicators">
+      <button *ngFor="let slide of slides; let i = index" 
+              class="indicator-dot" 
+              [ngClass]="{'active': i === currentSlideIndex}" 
+              (click)="setSlide(i)"
+              aria-label="Slide">
+      </button>
+    </div>
+
+    <button class="slider-arrow" (click)="nextSlideManual()" aria-label="Siguiente">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+  </div>
 
   <div class="container hero-grid">
     <div></div>
