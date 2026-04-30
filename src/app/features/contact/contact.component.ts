@@ -28,6 +28,29 @@ export class ContactComponent {
   constructor(private contactService: ContactService) { }
 
   submitForm(): void {
+    if (!this.model.name || !this.model.email || !this.model.service || !this.model.message) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Faltan datos',
+        text: 'Por favor, llena todos los campos requeridos (Nombre, Correo, Servicio y Mensaje) antes de enviar.',
+        confirmButtonText: 'Entendido',
+        confirmButtonColor: '#e02424'
+      });
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(this.model.email)) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Correo inválido',
+        text: 'Por favor introduce un correo electrónico válido.',
+        confirmButtonText: 'Entendido',
+        confirmButtonColor: '#e02424'
+      });
+      return;
+    }
+
     this.loading = true;
     this.errorMessage = '';
 
