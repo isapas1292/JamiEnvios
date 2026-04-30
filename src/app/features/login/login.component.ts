@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink, Router } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { AuthService } from '../../shared/services/auth.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-login',
@@ -28,7 +29,11 @@ export class LoginComponent {
 
   submitForm(): void {
     if (!this.model.email || !this.model.password) {
-      this.errorMessage = 'Por favor completa todos los campos';
+      Swal.fire({
+        icon: 'warning',
+        title: 'Campos incompletos',
+        text: 'Por favor completa todos los campos'
+      });
       return;
     }
 
@@ -39,17 +44,35 @@ export class LoginComponent {
     this.authService.login(this.model.email, this.model.password).subscribe({
       next: (response) => {
         this.loading = false;
-        this.successMessage = 'Login exitoso. Redirigiendo...';
-        console.log('Usuario logueado:', response.usuario);
         
-        setTimeout(() => {
+        Swal.fire({
+          title: '¡Bienvenido!',
+          text: 'Inicio de sesión exitoso. Redirigiendo...',
+          icon: 'success',
+          timer: 1500,
+          timerProgressBar: true,
+          showConfirmButton: false
+        }).then(() => {
           this.router.navigate(['/home']);
-        }, 1500);
+        });
       },
       error: (error) => {
         this.loading = false;
-        this.errorMessage = error.error?.error || 'Error en el login. Verifica tus credenciales.';
         console.error('Error de login:', error);
+        
+        if (error.status === 401) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Credenciales incorrectas',
+            text: 'El correo o la contraseña no coinciden'
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Error en el servidor. Intenta de nuevo más tarde.'
+          });
+        }
       }
     });
   }

@@ -43,7 +43,7 @@ app.get('/usuarios', async (req, res) => {
 app.post('/usuarios', async (req, res) => {
     try {
         const { nombre, email, password, rol_id } = req.body;
-        
+
         if (!nombre || !email || !password) {
             return res.status(400).json({ error: "Nombre, email y password son requeridos" });
         }
@@ -51,12 +51,12 @@ app.post('/usuarios', async (req, res) => {
         const request = new sql.Request();
         // Asignar rol_id = 2 (usuario normal) por defecto si no se proporciona
         const finalRolId = rol_id || 2;
-        
+
         await request.query(`
             INSERT INTO Usuarios (Nombre, Email, Password, Rol_Id) 
             VALUES ('${nombre}', '${email}', '${password}', ${finalRolId})
         `);
-        
+
         res.json({ mensaje: "Usuario agregado correctamente" });
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -67,7 +67,7 @@ app.post('/usuarios', async (req, res) => {
 app.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
-        
+
         if (!email || !password) {
             return res.status(400).json({ error: "Email y password son requeridos" });
         }
@@ -76,13 +76,13 @@ app.post('/login', async (req, res) => {
         const result = await request.query`
             SELECT * FROM Usuarios WHERE Email = ${email} AND Password = ${password}
         `;
-        
+
         if (result.recordset.length === 0) {
             return res.status(401).json({ error: "Email o contraseña incorrectos" });
         }
 
         const usuario = result.recordset[0];
-        res.json({ 
+        res.json({
             mensaje: "Login exitoso",
             usuario: {
                 id: usuario.Id,
@@ -99,7 +99,7 @@ app.post('/login', async (req, res) => {
 app.post('/enviar-contacto', async (req, res) => {
     try {
         const { name, email, phone, service, message } = req.body;
-        
+
         if (!name || !email || !service || !message) {
             return res.status(400).json({ error: "Nombre, email, servicio y mensaje son requeridos" });
         }
