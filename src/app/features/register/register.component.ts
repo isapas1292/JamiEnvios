@@ -88,10 +88,10 @@ export class RegisterComponent {
       this.loading = false;
 
       Swal.fire({
-        title: '¡Bienvenido a Jami Envíos!',
+        title: '¡Más cerca de los tuyos!',
         html: `
-          <p>Tu cuenta ha sido creada correctamente.</p>
-          <small>Ya puedes empezar a gestionar tus envíos</small>
+          <p>Registro completado correctamente.</p>
+          <small>Ya puedes gestionar tus envíos con una experiencia logística confiable, organizada y segura.</small>
         `,
         icon: 'success',
         background: 'linear-gradient(135deg, var(--blue), var(--blue-dark))',
