@@ -10,18 +10,26 @@ import { RouterLink } from '@angular/router';
   styleUrl: './about.component.css'
 })
 export class AboutComponent {
-  pillars = [
+  valores = [
+    {
+      title: 'Orgullo de origen',
+      text: 'Llevamos nuestra identidad con dignidad y trabajo.'
+    },
     {
       title: 'Confianza',
-      text: 'Trabajamos para que cada cliente sienta seguridad desde que entrega su mercancía.'
+      text: 'Sabemos el valor emocional y económico de cada envío.'
     },
     {
-      title: 'Servicio cercano',
-      text: 'Nos enfocamos en acompañar y orientar durante todo el proceso logístico.'
+      title: 'Responsabilidad',
+      text: 'Cumplimos con seriedad y disciplina.'
     },
     {
-      title: 'Soluciones reales',
-      text: 'Diseñamos servicios para personas, familias y negocios con necesidades concretas.'
+      title: 'Progreso',
+      text: 'Cada envío puede representar crecimiento para una familia o negocio.'
+    },
+    {
+      title: 'Cercanía',
+      text: 'Tratamos al cliente como parte de nuestra comunidad.'
     }
   ];
 }
