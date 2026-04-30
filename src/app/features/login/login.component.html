@@ -43,6 +43,15 @@
         </div>
   
         <form (ngSubmit)="submitForm()" #loginForm="ngForm" class="auth-form">
+          
+          <div *ngIf="errorMessage" class="alert alert-error">
+            {{ errorMessage }}
+          </div>
+          
+          <div *ngIf="successMessage" class="alert alert-success">
+            {{ successMessage }}
+          </div>
+
           <div class="field">
             <label for="email">Correo electrónico</label>
             <input
@@ -80,11 +89,11 @@
             <a routerLink="/contacto" class="forgot-link">¿Olvidaste tu contraseña?</a>
           </div>
   
-          <button class="btn btn-primary auth-submit" type="submit" [disabled]="loginForm.invalid">
-            Entrar
+          <button class="btn btn-primary auth-submit" type="submit" [disabled]="loginForm.invalid || loading">
+            {{ loading ? 'Ingresando...' : 'Entrar' }}
           </button>
   
-          <p class="success-message" *ngIf="submitted">
+          <p class="success-message" *ngIf="submitted && !loading && !errorMessage">
             Formulario enviado correctamente.
           </p>
         </form>

@@ -10,6 +10,12 @@
         </div>
   
         <form (ngSubmit)="submitForm()" #registerForm="ngForm" class="auth-form">
+          
+          <div *ngIf="errorMessage" class="alert alert-error">
+            {{ errorMessage }}
+          </div>
+          
+
           <div class="form-grid">
             <div class="field">
               <label for="fullName">Nombre completo</label>
@@ -80,11 +86,11 @@
             <span>Acepto los términos y condiciones</span>
           </label>
   
-          <button class="btn btn-primary auth-submit" type="submit" [disabled]="registerForm.invalid">
-            Crear cuenta
+          <button class="btn btn-primary auth-submit" type="submit" [disabled]="registerForm.invalid || loading">
+            {{ loading ? 'Registrando...' : 'Crear cuenta' }}
           </button>
   
-          <p class="success-message" *ngIf="submitted">
+          <p class="success-message" *ngIf="submitted && !loading && !errorMessage">
             Tu registro fue enviado correctamente.
           </p>
         </form>

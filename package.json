@@ -28,6 +28,7 @@
     "mssql": "^12.3.1",
     "nodemailer": "^8.0.6",
     "rxjs": "~7.8.0",
+    "sweetalert2": "^11.26.24",
     "tslib": "^2.3.0"
   },
   "devDependencies": {

@@ -15,6 +15,30 @@
     padding: 24px 6px 24px 0;
   }
   
+  .alert {
+    padding: 16px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    font-size: 0.95rem;
+    border-left: 4px solid;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .alert-error {
+    background-color: #f8d7da;
+    border-left-color: #dc3545;
+    color: #721c24;
+  }
+  
+  .alert-success {
+    background-color: #d4edda;
+    border-left-color: #28a745;
+    color: #155724;
+  }
+  
   .auth-benefits {
     display: grid;
     gap: 16px;
