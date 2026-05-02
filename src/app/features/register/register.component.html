@@ -41,15 +41,24 @@
             </div>
   
             <div class="field">
-              <label for="phone">Teléfono</label>
+            <label>Teléfono móvil</label>
+            <div class="phone-container">
+              <select [(ngModel)]="selectedCode" name="countryCode" class="country-dropdown">
+                <option *ngFor="let c of countryCodes" [value]="c.code">
+                  {{ c.flag }} {{ c.code }}
+                </option>
+              </select>
+              <span class="divider"></span>
               <input
-                id="phone"
+                type="tel"
                 name="phone"
                 [(ngModel)]="model.phone"
+                placeholder="Número"
+                class="phone-input-field"
                 required
-                placeholder="+34 000 000 000"
               />
             </div>
+          </div>
   
             <div class="field">
               <label for="password">Contraseña</label>

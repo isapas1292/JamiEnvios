@@ -24,6 +24,7 @@
     "cors": "^2.8.6",
     "dotenv": "^17.4.1",
     "express": "^5.2.1",
+    "intl-tel-input": "^28.0.4",
     "msnodesqlv8": "^5.1.8",
     "mssql": "^12.3.1",
     "nodemailer": "^8.0.6",

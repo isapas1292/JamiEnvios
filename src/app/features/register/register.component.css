@@ -170,4 +170,19 @@
     .field.full {
       grid-column: auto;
     }
+
+    .phone-input-field {
+  border: none !important;
+  flex: 1;
+  padding: 10px;
+  outline: none;
+  font-size: 14px;
+}
+
+input:not(.phone-input-field) {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  outline: none;
+}
   }
