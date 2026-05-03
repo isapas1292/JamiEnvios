@@ -48,6 +48,7 @@ export class AuthService {
       email,
       password,
       rol_id: 2,  // Usuario normal por defecto
+      telefono: phone
     }).pipe(
       tap(response => {
         console.log('Usuario registrado exitosamente');

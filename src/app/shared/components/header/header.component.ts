@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { AuthService, Usuario } from '../../services/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -8,9 +9,19 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
   mobileMenuOpen = false;
   isLoggedIn = false;
+  isAdmin = false;
+
+  constructor(private authService: AuthService) {}
+
+  ngOnInit() {
+    this.authService.currentUser$.subscribe((user: Usuario | null) => {
+      this.isLoggedIn = !!user;
+      this.isAdmin = user?.rol_id === 1;
+    });
+  }
 
   toggleMenu(): void {
     this.mobileMenuOpen = !this.mobileMenuOpen;

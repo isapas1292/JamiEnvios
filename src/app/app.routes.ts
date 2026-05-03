@@ -9,6 +9,7 @@ import { ContactComponent } from './features/contact/contact.component';
 import { LoginComponent } from './features/login/login.component';
 import { RegisterComponent } from './features/register/register.component';
 import { NotFoundComponent } from './features/not-found/not-found.component';
+import { authGuard } from './shared/guards/auth.guard';
 
 export const routes: Routes = [
   {
@@ -23,7 +24,8 @@ export const routes: Routes = [
       { path: 'contacto', component: ContactComponent, title: 'Contacto | JamiEnvios' },
       { path: 'login', component: LoginComponent, title: 'Iniciar sesión | JamiEnvios' },
       { path: 'registro', component: RegisterComponent, title: 'Registrarse | JamiEnvios' },
-      { path: 'rastreo', loadComponent: () => import('./features/tracking/tracking').then(m => m.Tracking), title: 'Rastreo de envíos | JamiEnvios' }
+      { path: 'rastreo', loadComponent: () => import('./features/tracking/tracking').then(m => m.Tracking), canActivate: [authGuard], title: 'Rastreo de envíos | JamiEnvios' },
+      { path: 'admin', loadComponent: () => import('./features/admin/admin').then(m => m.Admin), title: 'Administración | JamiEnvios' }
     ]
   },
   { path: '**', component: NotFoundComponent, title: 'Página no encontrada | JamiEnvios' }

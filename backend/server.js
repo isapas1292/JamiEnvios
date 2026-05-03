@@ -42,7 +42,7 @@ app.get('/usuarios', async (req, res) => {
 
 app.post('/usuarios', async (req, res) => {
     try {
-        const { nombre, email, password, rol_id } = req.body;
+        const { nombre, email, password, rol_id, telefono } = req.body;
         
         if (!nombre || !email || !password) {
             return res.status(400).json({ error: "Nombre, email y password son requeridos" });
@@ -53,8 +53,8 @@ app.post('/usuarios', async (req, res) => {
         const finalRolId = rol_id || 2;
         
         await request.query(`
-            INSERT INTO Usuarios (Nombre, Email, Password, Rol_Id) 
-            VALUES ('${nombre}', '${email}', '${password}', ${finalRolId})
+            INSERT INTO Usuarios (Nombre, Email, Password, Rol_Id, Phone) 
+            VALUES ('${nombre}', '${email}', '${password}', ${finalRolId}, ${telefono ? `'${telefono}'` : 'NULL'})
         `);
         
         res.json({ mensaje: "Usuario agregado correctamente" });
@@ -153,6 +153,78 @@ app.post('/enviar-contacto', async (req, res) => {
         res.json({ mensaje: "Solicitud enviada correctamente" });
     } catch (err) {
         console.error("Error al enviar correo:", err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.get('/api/admin/usuarios', async (req, res) => {
+    try {
+        const limit = req.query.limit ? parseInt(req.query.limit) : 100;
+        let query = `SELECT TOP ${limit} * FROM Usuarios WHERE 1=1`;
+        
+        const request = new sql.Request();
+
+        if (req.query.nombre) {
+            query += ` AND Nombre LIKE @nombre`;
+            request.input('nombre', sql.VarChar, `%${req.query.nombre}%`);
+        }
+        
+        if (req.query.email) {
+            query += ` AND Email LIKE @email`;
+            request.input('email', sql.VarChar, `%${req.query.email}%`);
+        }
+        
+        query += ` ORDER BY Id DESC`;
+
+        const result = await request.query(query);
+        res.json(result.recordset);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.get('/api/admin/envios', async (req, res) => {
+    try {
+        const limit = req.query.limit ? parseInt(req.query.limit) : 100;
+        let query = `SELECT TOP ${limit} * FROM Envios WHERE 1=1`;
+        
+        const request = new sql.Request();
+
+        if (req.query.cliente) {
+            query += ` AND Nombre_Cliente LIKE @cliente`;
+            request.input('cliente', sql.VarChar, `%${req.query.cliente}%`);
+        }
+        
+        if (req.query.estado) {
+            query += ` AND Estado_Actual = @estado`;
+            request.input('estado', sql.VarChar, req.query.estado);
+        }
+
+        if (req.query.destino) {
+            query += ` AND Destino LIKE @destino`;
+            request.input('destino', sql.VarChar, `%${req.query.destino}%`);
+        }
+
+        if (req.query.fechaInicio) {
+            query += ` AND Fecha_Recepcion >= @fechaInicio`;
+            request.input('fechaInicio', sql.Date, req.query.fechaInicio);
+        }
+
+        if (req.query.fechaFin) {
+            query += ` AND Fecha_Recepcion <= @fechaFin`;
+            request.input('fechaFin', sql.Date, req.query.fechaFin);
+        }
+
+        if (req.query.usuarioId) {
+            query += ` AND Usuario_Id = @usuarioId`;
+            request.input('usuarioId', sql.Int, req.query.usuarioId);
+        }
+
+        query += ` ORDER BY Id DESC`;
+
+        const result = await request.query(query);
+        res.json(result.recordset);
+    } catch (err) {
         res.status(500).json({ error: err.message });
     }
 });

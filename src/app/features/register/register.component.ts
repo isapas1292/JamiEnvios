@@ -86,11 +86,11 @@ export class RegisterComponent {
   }
 
   //Campos vacíos
-  if (!this.model.email || !this.model.password) {
+  if (!this.model.fullName || !this.model.email || !this.model.phone || !this.model.password || !this.model.confirmPassword) {
     Swal.fire({
       icon: 'warning',
       title: 'Campos incompletos',
-      text: 'Rellena todos los campos'
+      text: 'Rellena todos los campos para continuar'
     });
     return;
   }
@@ -111,11 +111,13 @@ export class RegisterComponent {
     this.errorMessage = '';
     this.successMessage = '';
 
+    const fullPhoneNumber = `${this.selectedCode} ${this.model.phone}`;
+
     this.authService.register(
       this.model.fullName,
       this.model.email,
       this.model.password,
-      this.model.phone
+      fullPhoneNumber
     ).subscribe({
    next: (response) => {
       this.loading = false;

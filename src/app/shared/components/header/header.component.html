@@ -23,9 +23,11 @@
       <a routerLink="/rastreo" routerLinkActive="active" (click)="closeMenu()">
         Rastreo
       </a>
-      <a routerLink="/contacto" routerLinkActive="active" (click)="closeMenu()">
-        Contacto
+
+      <a routerLink="/admin" routerLinkActive="active" class="admin-nav-link" (click)="closeMenu()" style="color: #f59e0b; font-weight: bold; margin-left: 10px; border: 1px dashed #f59e0b; padding: 5px; border-radius: 5px;">
+        🔍 VER ADMIN (Prueba)
       </a>
+
 
       @if (isLoggedIn) {
         <a routerLink="/perfil" class="user-icon-link" aria-label="Mi perfil" title="Mi perfil" (click)="closeMenu()">

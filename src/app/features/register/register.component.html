@@ -95,7 +95,7 @@
             <span>Acepto los términos y condiciones</span>
           </label>
   
-          <button class="btn btn-primary auth-submit" type="submit" [disabled]="registerForm.invalid || loading">
+          <button class="btn btn-primary auth-submit" type="submit" [disabled]="loading">
             {{ loading ? 'Registrando...' : 'Crear cuenta' }}
           </button>
   

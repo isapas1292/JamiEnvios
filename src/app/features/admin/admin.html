@@ -1,1 +1,157 @@
-<p>admin works!</p>
+<div class="admin-dashboard">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <h2>JAMI<span>Admin</span></h2>
+    </div>
+    <ul class="sidebar-nav">
+      <li [class.active]="activeTab === 'dashboard'"><a (click)="setTab('dashboard')"><span class="icon">📊</span> Dashboard</a></li>
+      <li [class.active]="activeTab === 'envios'"><a (click)="setTab('envios')"><span class="icon">📦</span> Envíos</a></li>
+      <li [class.active]="activeTab === 'usuarios'"><a (click)="setTab('usuarios')"><span class="icon">👥</span> Usuarios</a></li>
+      <li class="logout-item"><a href="/login"><span class="icon">🚪</span> Salir</a></li>
+    </ul>
+  </aside>
+
+  <main class="main-content">
+    <header class="topbar">
+      <div class="search-bar">
+        <span>Panel Administrativo</span>
+      </div>
+      <div class="user-profile">
+        <div class="avatar">AD</div>
+        <span>Administrador</span>
+      </div>
+    </header>
+
+    <div class="dashboard-content">
+      <div *ngIf="loading" class="loading-overlay">Cargando datos...</div>
+
+      <!-- TAB: DASHBOARD -->
+      <div *ngIf="activeTab === 'dashboard'">
+        <div class="page-header">
+          <h1>Resumen General</h1>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card" *ngFor="let stat of stats">
+            <div class="stat-icon">{{ stat.icon }}</div>
+            <div class="stat-details">
+              <h3>{{ stat.title }}</h3>
+              <p class="stat-value">{{ stat.value }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="recent-shipments">
+          <div class="section-header">
+            <h2>Últimos Envíos Registrados</h2>
+          </div>
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Guía</th><th>Cliente</th><th>Destino</th><th>Estado</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let envio of envios | slice:0:5">
+                  <td class="id-col">{{ envio.Numero_Guia }}</td>
+                  <td>{{ envio.Nombre_Cliente }}</td>
+                  <td>{{ envio.Destino }}</td>
+                  <td><span class="status-badge" [ngClass]="'status-' + (envio.Estado_Actual | lowercase).replace(' ', '-')">{{ envio.Estado_Actual }}</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: ENVIOS -->
+      <div *ngIf="activeTab === 'envios'">
+        <div class="page-header">
+          <h1>Gestión de Envíos</h1>
+        </div>
+        
+        <div class="filters-card">
+          <div class="filter-group">
+            <input type="text" placeholder="Cliente..." [(ngModel)]="enviosFilters.cliente">
+            <select [(ngModel)]="enviosFilters.estado">
+              <option value="">Todos los estados</option>
+              <option value="Pendiente">Pendiente</option>
+              <option value="En Tránsito">En Tránsito</option>
+              <option value="Entregado">Entregado</option>
+              <option value="Cancelado">Cancelado</option>
+            </select>
+            <input type="text" placeholder="Destino..." [(ngModel)]="enviosFilters.destino">
+            <input type="date" [(ngModel)]="enviosFilters.fechaInicio" title="Fecha Inicio">
+            <input type="date" [(ngModel)]="enviosFilters.fechaFin" title="Fecha Fin">
+            <button class="btn btn-primary" (click)="loadEnvios()">Buscar</button>
+            <button class="btn btn-secondary" (click)="resetEnviosFilters()">Limpiar</button>
+          </div>
+        </div>
+
+        <div class="recent-shipments">
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Guía</th><th>Cliente</th><th>Fecha</th><th>Destino</th><th>Estado</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let envio of envios">
+                  <td class="id-col">{{ envio.Numero_Guia }}</td>
+                  <td>{{ envio.Nombre_Cliente }}</td>
+                  <td>{{ envio.Fecha_Recepcion | date:'shortDate' }}</td>
+                  <td>{{ envio.Destino }}</td>
+                  <td><span class="status-badge" [ngClass]="'status-' + (envio.Estado_Actual | lowercase).replace(' ', '-')">{{ envio.Estado_Actual }}</span></td>
+                </tr>
+                <tr *ngIf="envios.length === 0">
+                  <td colspan="5" class="text-center">No se encontraron envíos con estos filtros.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: USUARIOS -->
+      <div *ngIf="activeTab === 'usuarios'">
+        <div class="page-header">
+          <h1>Directorio de Usuarios</h1>
+        </div>
+
+        <div class="filters-card">
+          <div class="filter-group">
+            <input type="text" placeholder="Buscar por Nombre..." [(ngModel)]="usuariosFilters.nombre">
+            <input type="text" placeholder="Buscar por Email..." [(ngModel)]="usuariosFilters.email">
+            <button class="btn btn-primary" (click)="loadUsuarios()">Buscar</button>
+            <button class="btn btn-secondary" (click)="resetUsuariosFilters()">Limpiar</button>
+          </div>
+        </div>
+
+        <div class="recent-shipments">
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>ID</th><th>Nombre</th><th>Email</th><th>Teléfono</th><th>Rol ID</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let user of usuarios">
+                  <td class="id-col">#{{ user.Id }}</td>
+                  <td>{{ user.Nombre }}</td>
+                  <td>{{ user.Email }}</td>
+                  <td>{{ user.Phone || 'N/A' }}</td>
+                  <td>{{ user.Rol_Id }}</td>
+                </tr>
+                <tr *ngIf="usuarios.length === 0">
+                  <td colspan="5" class="text-center">No se encontraron usuarios.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
