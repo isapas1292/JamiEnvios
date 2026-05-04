@@ -1,0 +1,66 @@
+<div class="profile-container container">
+  <div class="profile-header">
+    <div class="profile-avatar">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+        <circle cx="12" cy="7" r="4"></circle>
+      </svg>
+    </div>
+    <div class="profile-info">
+      <h1>{{ user?.nombre || 'Usuario' }}</h1>
+      <p class="profile-email">{{ user?.email }}</p>
+      <span class="role-badge">
+        {{ user?.rol_id === 1 ? 'Cliente' : (user?.rol_id === 2 ? 'Administrador' : (user?.rol_id === 4 ? 'Empleado' : 'Usuario')) }}
+      </span>
+    </div>
+    <div class="profile-actions">
+      <button class="btn btn-outline" (click)="logout()">
+        Cerrar Sesión
+      </button>
+    </div>
+  </div>
+
+  <div class="profile-content">
+    <div class="card">
+      <div class="card-header">
+        <h2>Historial de Envíos</h2>
+      </div>
+      <div class="card-body">
+        @if (loading) {
+          <div class="loading-spinner">Cargando historial...</div>
+        } @else if (envios.length === 0) {
+          <div class="empty-state">
+            <p>No tienes envíos registrados en tu historial.</p>
+          </div>
+        } @else {
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>N° Guía</th>
+                  <th>Destino</th>
+                  <th>Fecha</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (envio of envios; track envio.Id) {
+                  <tr>
+                    <td><strong>{{ envio.Numero_Guia }}</strong></td>
+                    <td>{{ envio.Destino }}</td>
+                    <td>{{ envio.Fecha_Recepcion | date:'dd/MM/yyyy' }}</td>
+                    <td>
+                      <span class="status-badge" [class]="(envio.Estado_Nombre || envio.Estado_Actual || '').toLowerCase().replace(' ', '-')">
+                        {{ envio.Estado_Nombre || envio.Estado_Actual }}
+                      </span>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>

@@ -13,13 +13,15 @@ export class HeaderComponent implements OnInit {
   mobileMenuOpen = false;
   isLoggedIn = false;
   isAdmin = false;
+  isEmployee = false;
 
   constructor(private authService: AuthService) {}
 
   ngOnInit() {
     this.authService.currentUser$.subscribe((user: Usuario | null) => {
       this.isLoggedIn = !!user;
-      this.isAdmin = user?.rol_id === 1;
+      this.isAdmin = user?.rol_id === 2;
+      this.isEmployee = user?.rol_id === 4;
     });
   }
 

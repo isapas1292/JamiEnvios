@@ -1,0 +1,95 @@
+<div class="employee-container container">
+  <div class="header-section">
+    <h1>Panel de Empleado</h1>
+    <p>Gestión operativa de envíos activos</p>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <h2>Envíos en Curso</h2>
+      <button class="btn btn-outline" (click)="loadEnvios()">🔄 Actualizar</button>
+    </div>
+    <div class="card-body">
+      @if (loading) {
+        <div class="loading-state">Cargando envíos activos...</div>
+      } @else if (enviosActivos.length === 0) {
+        <div class="empty-state">
+          <p>No hay envíos activos en este momento.</p>
+        </div>
+      } @else {
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>N° Guía</th>
+                <th>Cliente</th>
+                <th>Destino</th>
+                <th>Fecha Ingreso</th>
+                <th>Estado Actual</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (envio of enviosActivos; track envio.Id) {
+                <tr class="envio-row">
+                  <td><strong>{{ envio.Numero_Guia }}</strong></td>
+                  <td>{{ envio.Nombre_Cliente }}</td>
+                  <td>{{ envio.Destino }}</td>
+                  <td>{{ envio.Fecha_Recepcion | date:'dd/MM/yyyy' }}</td>
+                  <td>
+                    <span class="status-badge" [class]="(envio.Estado_Nombre || envio.Estado_Actual || '').toLowerCase().replace(' ', '-')">
+                      {{ envio.Estado_Nombre || envio.Estado_Actual }}
+                    </span>
+                  </td>
+                  <td>
+                    <div class="action-cell">
+                      <select #estadoSelect class="form-select" [value]="envio.Estado_Envio_Id">
+                        @for (estado of estadosValidos; track estado.id) {
+                          <option [value]="estado.id" [disabled]="estado.id === envio.Estado_Envio_Id">{{ estado.nombre }}</option>
+                        }
+                      </select>
+                      <button class="btn btn-primary btn-sm" (click)="cambiarEstado(envio, estadoSelect.value)">
+                        Actualizar
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+  </div>
+
+  <div class="card mt-4">
+    <div class="card-header">
+      <h2>Crear Nuevo Usuario (Cliente)</h2>
+    </div>
+    <div class="card-body">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Nombre Completo *</label>
+          <input type="text" [(ngModel)]="nuevoUsuario.nombre" class="form-input" placeholder="Ej. Juan Pérez">
+        </div>
+        <div class="form-group">
+          <label>Correo Electrónico *</label>
+          <input type="email" [(ngModel)]="nuevoUsuario.email" class="form-input" placeholder="ejemplo@correo.com">
+        </div>
+        <div class="form-group">
+          <label>Contraseña *</label>
+          <input type="password" [(ngModel)]="nuevoUsuario.password" class="form-input" placeholder="Mínimo 6 caracteres">
+        </div>
+        <div class="form-group">
+          <label>Teléfono (Opcional)</label>
+          <input type="text" [(ngModel)]="nuevoUsuario.phone" class="form-input" placeholder="Ej. +34 123 456 789">
+        </div>
+      </div>
+      <div class="form-actions mt-3">
+        <button class="btn btn-primary" (click)="crearUsuario()" [disabled]="creandoUsuario">
+          {{ creandoUsuario ? 'Creando...' : 'Crear Usuario' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

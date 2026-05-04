@@ -7,6 +7,7 @@
       <li [class.active]="activeTab === 'dashboard'"><a (click)="setTab('dashboard')"><span class="icon">📊</span> Dashboard</a></li>
       <li [class.active]="activeTab === 'envios'"><a (click)="setTab('envios')"><span class="icon">📦</span> Envíos</a></li>
       <li [class.active]="activeTab === 'usuarios'"><a (click)="setTab('usuarios')"><span class="icon">👥</span> Usuarios</a></li>
+      <li [class.active]="activeTab === 'empleado'"><a (click)="setTab('empleado')" style="cursor: pointer;"><span class="icon">💼</span> Panel Empleado</a></li>
       <li class="logout-item"><a href="/login"><span class="icon">🚪</span> Salir</a></li>
     </ul>
   </aside>
@@ -23,7 +24,6 @@
     </header>
 
     <div class="dashboard-content">
-      <div *ngIf="loading" class="loading-overlay">Cargando datos...</div>
 
       <!-- TAB: DASHBOARD -->
       <div *ngIf="activeTab === 'dashboard'">
@@ -55,7 +55,7 @@
                   <td class="id-col">{{ envio.Numero_Guia }}</td>
                   <td>{{ envio.Nombre_Cliente }}</td>
                   <td>{{ envio.Destino }}</td>
-                  <td><span class="status-badge" [ngClass]="'status-' + (envio.Estado_Actual | lowercase).replace(' ', '-')">{{ envio.Estado_Actual }}</span></td>
+                  <td><span class="status-badge" [ngClass]="'status-' + (envio.Estado_Nombre || envio.Estado_Actual || '').toLowerCase().replace(' ', '-')">{{ envio.Estado_Nombre || envio.Estado_Actual }}</span></td>
                 </tr>
               </tbody>
             </table>
@@ -74,12 +74,23 @@
             <input type="text" placeholder="Cliente..." [(ngModel)]="enviosFilters.cliente">
             <select [(ngModel)]="enviosFilters.estado">
               <option value="">Todos los estados</option>
-              <option value="Pendiente">Pendiente</option>
-              <option value="En Tránsito">En Tránsito</option>
-              <option value="Entregado">Entregado</option>
-              <option value="Cancelado">Cancelado</option>
+              <option value="Activos">Solo Activos</option>
+              <option value="1">Pendiente</option>
+              <option value="2">En Tránsito</option>
+              <option value="3">En Aduana</option>
+              <option value="4">En Reparto</option>
+              <option value="5">Entregado</option>
+              <option value="6">Cancelado</option>
             </select>
-            <input type="text" placeholder="Destino..." [(ngModel)]="enviosFilters.destino">
+            <select [(ngModel)]="enviosFilters.destino">
+              <option value="">Provincias</option>
+              <option *ngFor="let provincia of provinciasRD" [value]="provincia">{{ provincia }}</option>
+            </select>
+            <div class="full-width-input">
+              <input type="text"
+                placeholder="Dirección"
+                [(ngModel)]="enviosFilters.direccion" class="direccion-input">
+            </div>
             <input type="date" [(ngModel)]="enviosFilters.fechaInicio" title="Fecha Inicio">
             <input type="date" [(ngModel)]="enviosFilters.fechaFin" title="Fecha Fin">
             <button class="btn btn-primary" (click)="loadEnvios()">Buscar</button>
@@ -92,19 +103,46 @@
             <table class="admin-table">
               <thead>
                 <tr>
-                  <th>Guía</th><th>Cliente</th><th>Fecha</th><th>Destino</th><th>Estado</th>
+                  <th>Guía</th><th>Cliente</th><th>Fecha</th><th>Destino</th><th>Estado</th><th>Observaciones</th><th>Acciones</th>
                 </tr>
               </thead>
               <tbody>
                 <tr *ngFor="let envio of envios">
-                  <td class="id-col">{{ envio.Numero_Guia }}</td>
-                  <td>{{ envio.Nombre_Cliente }}</td>
-                  <td>{{ envio.Fecha_Recepcion | date:'shortDate' }}</td>
-                  <td>{{ envio.Destino }}</td>
-                  <td><span class="status-badge" [ngClass]="'status-' + (envio.Estado_Actual | lowercase).replace(' ', '-')">{{ envio.Estado_Actual }}</span></td>
+                  <ng-container *ngIf="editingEnvioId !== envio.Id">
+                    <td class="id-col">{{ envio.Numero_Guia }}</td>
+                    <td>{{ envio.Nombre_Cliente }}</td>
+                    <td>{{ envio.Fecha_Recepcion | date:'shortDate' }}</td>
+                    <td>{{ envio.Destino }}</td>
+                    <td><span class="status-badge" [ngClass]="'status-' + (envio.Estado_Nombre || envio.Estado_Actual || '').toLowerCase().replace(' ', '-')">{{ envio.Estado_Nombre || envio.Estado_Actual }}</span></td>
+                    <td>{{ envio.Observaciones || 'N/A' }}</td>
+                    <td>
+                      <button class="btn btn-sm btn-outline" (click)="startEditing(envio)">✏️ Editar</button>
+                    </td>
+                  </ng-container>
+                  <ng-container *ngIf="editingEnvioId === envio.Id">
+                    <td><input type="text" [(ngModel)]="editedEnvio.Numero_Guia" class="form-input"></td>
+                    <td><input type="text" [(ngModel)]="editedEnvio.Nombre_Cliente" class="form-input"></td>
+                    <td>{{ envio.Fecha_Recepcion | date:'shortDate' }}</td>
+                    <td><input type="text" [(ngModel)]="editedEnvio.Destino" class="form-input"></td>
+                    <td>
+                      <select [(ngModel)]="editedEnvio.Estado_Envio_Id" class="form-select">
+                        <option [ngValue]="1">Pendiente</option>
+                        <option [ngValue]="2">En Tránsito</option>
+                        <option [ngValue]="3">En Aduana</option>
+                        <option [ngValue]="4">En Reparto</option>
+                        <option [ngValue]="5">Entregado</option>
+                        <option [ngValue]="6">Cancelado</option>
+                      </select>
+                    </td>
+                    <td><input type="text" [(ngModel)]="editedEnvio.Observaciones" class="form-input"></td>
+                    <td>
+                      <button class="btn btn-sm btn-primary" (click)="saveEditing()">Guardar</button>
+                      <button class="btn btn-sm btn-secondary" (click)="cancelEditing()">Cancelar</button>
+                    </td>
+                  </ng-container>
                 </tr>
                 <tr *ngIf="envios.length === 0">
-                  <td colspan="5" class="text-center">No se encontraron envíos con estos filtros.</td>
+                  <td colspan="7" class="text-center">No se encontraron envíos con estos filtros.</td>
                 </tr>
               </tbody>
             </table>
@@ -150,6 +188,11 @@
             </table>
           </div>
         </div>
+      </div>
+
+      <!-- TAB: EMPLEADO -->
+      <div *ngIf="activeTab === 'empleado'">
+        <app-employee></app-employee>
       </div>
 
     </div>

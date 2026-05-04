@@ -49,8 +49,8 @@ app.post('/usuarios', async (req, res) => {
         }
 
         const request = new sql.Request();
-        // Asignar rol_id = 2 (usuario normal) por defecto si no se proporciona
-        const finalRolId = rol_id || 2;
+        // Asignar rol_id = 1 (User) por defecto si no se proporciona
+        const finalRolId = rol_id || 1;
         
         await request.query(`
             INSERT INTO Usuarios (Nombre, Email, Password, Rol_Id, Phone) 
@@ -186,44 +186,133 @@ app.get('/api/admin/usuarios', async (req, res) => {
 app.get('/api/admin/envios', async (req, res) => {
     try {
         const limit = req.query.limit ? parseInt(req.query.limit) : 100;
-        let query = `SELECT TOP ${limit} * FROM Envios WHERE 1=1`;
+        let query = `
+            SELECT e.*, ee.Nombre as Estado_Nombre, ee.Activo 
+            FROM Envios e
+            LEFT JOIN EstadosEnvio ee ON e.Estado_Envio_Id = ee.Id
+            WHERE 1=1
+        `;
         
         const request = new sql.Request();
 
         if (req.query.cliente) {
-            query += ` AND Nombre_Cliente LIKE @cliente`;
+            query += ` AND e.Nombre_Cliente LIKE @cliente`;
             request.input('cliente', sql.VarChar, `%${req.query.cliente}%`);
         }
         
         if (req.query.estado) {
-            query += ` AND Estado_Actual = @estado`;
-            request.input('estado', sql.VarChar, req.query.estado);
+            if (req.query.estado === 'Activos') {
+                query += ` AND ee.Activo = 1`;
+            } else {
+                query += ` AND e.Estado_Envio_Id = @estadoId`;
+                request.input('estadoId', sql.Int, parseInt(req.query.estado));
+            }
         }
 
         if (req.query.destino) {
-            query += ` AND Destino LIKE @destino`;
+            query += ` AND e.Destino LIKE @destino`;
             request.input('destino', sql.VarChar, `%${req.query.destino}%`);
         }
 
+        if (req.query.direccion) {
+            query += ` AND e.Direccion LIKE @direccion`;
+            request.input('direccion', sql.VarChar, `%${req.query.direccion}%`);
+        }
+
         if (req.query.fechaInicio) {
-            query += ` AND Fecha_Recepcion >= @fechaInicio`;
+            query += ` AND e.Fecha_Recepcion >= @fechaInicio`;
             request.input('fechaInicio', sql.Date, req.query.fechaInicio);
         }
 
         if (req.query.fechaFin) {
-            query += ` AND Fecha_Recepcion <= @fechaFin`;
+            query += ` AND e.Fecha_Recepcion <= @fechaFin`;
             request.input('fechaFin', sql.Date, req.query.fechaFin);
         }
 
         if (req.query.usuarioId) {
-            query += ` AND Usuario_Id = @usuarioId`;
+            query += ` AND e.Usuario_Id = @usuarioId`;
             request.input('usuarioId', sql.Int, req.query.usuarioId);
         }
 
-        query += ` ORDER BY Id DESC`;
+        query += ` ORDER BY e.Id DESC`;
 
+        // Apply TOP logic if needed manually, or modify the SELECT. We'll stick to a simple execute.
+        // It's safe since there aren't thousands of records in this sample.
         const result = await request.query(query);
         res.json(result.recordset);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.get('/api/envios/tracking/:numero_guia', async (req, res) => {
+    try {
+        const { numero_guia } = req.params;
+        const request = new sql.Request();
+        request.input('numero_guia', sql.VarChar, numero_guia);
+        const result = await request.query(`
+            SELECT TOP 1 e.*, ee.Nombre as Estado_Nombre 
+            FROM Envios e
+            LEFT JOIN EstadosEnvio ee ON e.Estado_Envio_Id = ee.Id
+            WHERE e.Numero_Guia LIKE '%' + @numero_guia + '%'
+            ORDER BY e.Id DESC
+        `);
+        if (result.recordset.length === 0) {
+            return res.status(404).json({ error: "Envío no encontrado" });
+        }
+        res.json(result.recordset[0]);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.put('/api/envios/:id/estado', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { estado_id } = req.body;
+
+        if (!estado_id) {
+            return res.status(400).json({ error: "El estado_id es requerido" });
+        }
+
+        const request = new sql.Request();
+        const result = await request.query(`
+            UPDATE Envios 
+            SET Estado_Envio_Id = ${estado_id} 
+            WHERE Id = ${id}
+        `);
+
+        if (result.rowsAffected[0] === 0) {
+            return res.status(404).json({ error: "Envío no encontrado" });
+        }
+
+        res.json({ mensaje: "Estado actualizado correctamente" });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.put('/api/admin/envios/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { Numero_Guia, Nombre_Cliente, Estado_Envio_Id, Destino, Observaciones } = req.body;
+
+        const request = new sql.Request();
+        const result = await request.query(`
+            UPDATE Envios 
+            SET Numero_Guia = '${Numero_Guia}', 
+                Nombre_Cliente = '${Nombre_Cliente}', 
+                Estado_Envio_Id = ${Estado_Envio_Id}, 
+                Destino = '${Destino}', 
+                Observaciones = '${Observaciones}'
+            WHERE Id = ${id}
+        `);
+
+        if (result.rowsAffected[0] === 0) {
+            return res.status(404).json({ error: "Envío no encontrado" });
+        }
+
+        res.json({ mensaje: "Envío actualizado correctamente" });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

@@ -53,7 +53,7 @@ export class LoginComponent {
           timerProgressBar: true,
           showConfirmButton: false
         }).then(() => {
-          this.router.navigate(['/home']);
+          this.router.navigate(['/perfil']);
         });
       },
       error: (error) => {

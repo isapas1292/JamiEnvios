@@ -24,9 +24,17 @@
         Rastreo
       </a>
 
-      <a routerLink="/admin" routerLinkActive="active" class="admin-nav-link" (click)="closeMenu()" style="color: #f59e0b; font-weight: bold; margin-left: 10px; border: 1px dashed #f59e0b; padding: 5px; border-radius: 5px;">
-        🔍 VER ADMIN (Prueba)
-      </a>
+      @if (isAdmin) {
+        <a routerLink="/admin" routerLinkActive="active" class="admin-nav-link" (click)="closeMenu()" style="color: #f59e0b; font-weight: bold; margin-left: 10px; border: 1px dashed #f59e0b; padding: 5px; border-radius: 5px;">
+          🔍 PANEL ADMIN
+        </a>
+      }
+
+      @if (isEmployee) {
+        <a routerLink="/empleado" routerLinkActive="active" class="admin-nav-link" (click)="closeMenu()" style="color: #10b981; font-weight: bold; margin-left: 10px; border: 1px dashed #10b981; padding: 5px; border-radius: 5px;">
+          📦 PANEL EMPLEADO
+        </a>
+      }
 
 
       @if (isLoggedIn) {

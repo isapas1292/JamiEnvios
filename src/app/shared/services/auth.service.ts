@@ -47,7 +47,7 @@ export class AuthService {
       nombre,
       email,
       password,
-      rol_id: 2,  // Usuario normal por defecto
+      rol_id: 1,  // Usuario normal por defecto
       telefono: phone
     }).pipe(
       tap(response => {

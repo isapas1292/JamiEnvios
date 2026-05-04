@@ -10,32 +10,75 @@
           type="text" 
           [(ngModel)]="searchQuery" 
           (keyup.enter)="onSearch()"
-          placeholder="Ej: JAMI001" />
+          placeholder="Ej: JAM-0001" />
         <button class="btn-search" (click)="onSearch()">Buscar</button>
       </div>
     </div>
 
-    <!-- Cargando (Simulado) -->
-    <div *ngIf="isSearching" class="loading-state">
-      Buscando información de tu paquete...
-    </div>
+    <!-- Loading Spinner -->
+    @if (isSearching) {
+      <div class="loading-spinner-container">
+        <div class="spinner"></div>
+        <p>Buscando tu paquete...</p>
+      </div>
+    }
+
+    <!-- Error -->
+    @if (errorMsg) {
+      <div class="error-state" style="color:red; text-align:center; padding: 1rem;">
+        {{ errorMsg }}
+      </div>
+    }
 
     <!-- Resultados Visuales -->
-    <div *ngIf="hasResult" class="result-section">
-      <div class="result-header">
-        <h3>Tu Paquete: <span>{{ searchQuery || 'JAMI001' | uppercase }}</span></h3>
-      </div>
-
-      <div class="timeline">
-        <div class="timeline-line">
-          <div class="timeline-line-progress"></div>
+    @if (hasResult && envioData) {
+      <div class="result-section">
+        <!-- Order details box -->
+        <div class="order-details-box">
+          <div class="order-col">
+            <span class="label">FECHA DE RECEPCIÓN</span>
+            <span class="value">{{ envioData.Fecha_Recepcion | date:'dd/MM/yyyy' }}</span>
+          </div>
+          <div class="order-col">
+            <span class="label">DESTINO</span>
+            <span class="value">{{ envioData.Destino }}</span>
+          </div>
+          <div class="order-col">
+            <span class="label">CLIENTE</span>
+            <span class="value">{{ envioData.Nombre_Cliente }}</span>
+          </div>
+          <div class="order-col">
+            <span class="label">N° DE GUÍA</span>
+            <span class="value">{{ envioData.Numero_Guia }}</span>
+          </div>
         </div>
 
-        <div class="timeline-step" *ngFor="let step of timelineSteps" [class.active]="step.active">
-          <div class="step-icon">{{ step.icon }}</div>
-          <div class="step-text">{{ step.text }}</div>
+        <div class="status-summary" style="text-align:center; margin-top: 2rem;">
+          <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem; font-weight: 600;">
+            Estado: <span [ngStyle]="{'color': envioData.Estado_Envio_Id === 6 ? '#e3000f' : '#28a745'}">{{ envioData.Estado_Nombre }}</span>
+          </h3>
+          @if (envioData.Estado_Envio_Id !== 6 && envioData.Estado_Envio_Id !== 5) {
+            <p style="color: #666; font-weight: 500;">
+              Fecha de entrega estimada: {{ envioData.Fecha_Estimada | date:'dd MMM yyyy' }}
+            </p>
+          }
         </div>
+
+        @if (envioData.Estado_Envio_Id !== 6) {
+          <div class="timeline">
+            <div class="timeline-line">
+              <div class="timeline-line-progress" [style.width]="progressWidth"></div>
+            </div>
+
+            @for (step of timelineSteps; track step.id) {
+              <div class="timeline-step" [class.active]="step.active">
+                <div class="step-icon">{{ step.icon }}</div>
+                <div class="step-text">{{ step.text }}</div>
+              </div>
+            }
+          </div>
+        }
       </div>
-    </div>
+    }
   </div>
 </div>
