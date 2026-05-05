@@ -54,7 +54,8 @@
   font-weight: 500;
 }
 
-.sidebar-nav a:hover, .sidebar-nav li.active a {
+.sidebar-nav a:hover,
+.sidebar-nav li.active a {
   background-color: #334155;
   color: #fff;
   border-left: 4px solid #38bdf8;
@@ -383,7 +384,8 @@
   align-items: center;
 }
 
-.filter-group input, .filter-group select {
+.filter-group input,
+.filter-group select {
   padding: 10px;
   border: 1px solid #cbd5e1;
   border-radius: 6px;
@@ -392,7 +394,8 @@
   flex-grow: 1;
 }
 
-.filter-group input:focus, .filter-group select:focus {
+.filter-group input:focus,
+.filter-group select:focus {
   outline: none;
   border-color: #38bdf8;
   box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1);
@@ -426,7 +429,7 @@
 }
 
 .loading-overlay {
-  background-color: rgba(255,255,255,0.8);
+  background-color: rgba(255, 255, 255, 0.8);
   padding: 20px;
   border-radius: 8px;
   text-align: center;
@@ -445,14 +448,17 @@
   background-color: #fef3c7;
   color: #b45309;
 }
+
 .status-en-tránsito {
   background-color: #e0f2fe;
   color: #0369a1;
 }
+
 .status-entregado {
   background-color: #dcfce7;
   color: #166534;
 }
+
 .status-cancelado {
   background-color: #fee2e2;
   color: #991b1b;
@@ -481,4 +487,91 @@
   background-size: 1em;
   padding-right: 2.5rem;
   cursor: pointer;
+}
+
+/* ── Bulk action bar ───────────────────────────────────────────── */
+.bulk-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 0 24px;
+  background: #f0f9ff;
+  border-bottom: 1px solid #bae6fd;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.3s ease, opacity 0.25s ease, padding 0.25s ease;
+}
+
+.bulk-bar.visible {
+  max-height: 72px;
+  opacity: 1;
+  padding: 12px 24px;
+}
+
+.bulk-count {
+  font-weight: 600;
+  color: #0369a1;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.bulk-select {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  font-size: 14px;
+  background: white;
+  min-width: 170px;
+}
+
+/* ── Check column ──────────────────────────────────────────────── */
+.check-col {
+  width: 48px;
+  text-align: center !important;
+  padding: 16px 8px !important;
+}
+
+.admin-table input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: #0284c7;
+}
+
+.row-selected {
+  background: #f0f9ff !important;
+}
+
+/* ── Extra button variants ─────────────────────────────────────── */
+.btn-sm {
+  padding: 6px 14px;
+  font-size: 13px;
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid #cbd5e1;
+  color: #475569;
+}
+
+.btn-outline:hover {
+  background: #f1f5f9;
+}
+
+.form-input {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  font-size: 13px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.form-select {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  font-size: 13px;
 }

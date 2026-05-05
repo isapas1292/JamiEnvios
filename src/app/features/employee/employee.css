@@ -77,7 +77,8 @@
   font-size: 13px;
 }
 
-.empty-state, .loading-state {
+.empty-state,
+.loading-state {
   text-align: center;
   padding: 40px 20px;
   color: #6b7280;
@@ -124,12 +125,35 @@
   color: #374151;
 }
 
-.status-badge.recibido { background: #dbeafe; color: #1e40af; }
-.status-badge.en-tránsito { background: #fef3c7; color: #92400e; }
-.status-badge.en-aduana { background: #ffedd5; color: #c2410c; }
-.status-badge.en-reparto { background: #e0e7ff; color: #4338ca; }
-.status-badge.entregado { background: #d1fae5; color: #065f46; }
-.status-badge.cancelado { background: #fee2e2; color: #b91c1c; }
+.status-badge.recibido {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.status-badge.en-tránsito {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-badge.en-aduana {
+  background: #ffedd5;
+  color: #c2410c;
+}
+
+.status-badge.en-reparto {
+  background: #e0e7ff;
+  color: #4338ca;
+}
+
+.status-badge.entregado {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.status-badge.cancelado {
+  background: #fee2e2;
+  color: #b91c1c;
+}
 
 .action-cell {
   display: flex;
@@ -152,8 +176,13 @@
   box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
 }
 
-.mt-4 { margin-top: 2rem; }
-.mt-3 { margin-top: 1.5rem; }
+.mt-4 {
+  margin-top: 2rem;
+}
+
+.mt-3 {
+  margin-top: 1.5rem;
+}
 
 .form-grid {
   display: grid;
@@ -191,4 +220,3 @@
   display: flex;
   justify-content: flex-end;
 }
-
