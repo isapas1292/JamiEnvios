@@ -220,3 +220,73 @@
   display: flex;
   justify-content: flex-end;
 }
+
+/* Bulk Selection Styles */
+.bulk-action-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 20px;
+  margin-bottom: 0;
+  opacity: 0;
+  visibility: hidden;
+  height: 0;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.bulk-action-bar.active {
+  opacity: 1;
+  visibility: visible;
+  height: auto;
+  margin-bottom: 20px;
+}
+
+.bulk-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.selection-count {
+  font-size: 14px;
+  color: #475569;
+}
+
+.bulk-controls {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.checkbox-col {
+  width: 40px;
+  text-align: center;
+}
+
+.checkbox-col input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #4f46e5;
+}
+
+.envio-row.selected {
+  background-color: #f0f4ff;
+}
+
+.envio-row.selected:hover {
+  background-color: #e5edff;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.bulk-action-bar.active {
+  animation: fadeIn 0.3s ease-out;
+}

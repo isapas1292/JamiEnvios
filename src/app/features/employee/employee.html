@@ -18,9 +18,30 @@
       </div>
       } @else {
       <div class="table-responsive">
+        <div class="bulk-action-bar" [class.active]="selectedIds.size > 0">
+          <div class="bulk-info">
+            <span class="selection-count"><strong>{{ selectedIds.size }}</strong> seleccionados</span>
+          </div>
+          <div class="bulk-controls">
+            <select [(ngModel)]="bulkEstado" class="form-select">
+              <option value="" disabled selected>Cambiar estado a...</option>
+              @for (estado of estadosValidos; track estado.id) {
+              <option [value]="estado.id">{{ estado.nombre }}</option>
+              }
+            </select>
+            <button class="btn btn-primary" (click)="cambiarEstadoMasivo()" [disabled]="bulkLoading || !bulkEstado">
+              {{ bulkLoading ? 'Actualizando...' : 'Actualizar Grupo' }}
+            </button>
+          </div>
+        </div>
+
         <table class="data-table">
           <thead>
             <tr>
+              <th class="checkbox-col">
+                <input type="checkbox" [checked]="allSelected" [indeterminate]="isBulkPartial"
+                  (change)="toggleAll($any($event.target).checked)">
+              </th>
               <th>N° Guía</th>
               <th>Cliente</th>
               <th>Destino</th>
@@ -31,7 +52,10 @@
           </thead>
           <tbody>
             @for (envio of enviosActivos; track envio.Id) {
-            <tr class="envio-row">
+            <tr class="envio-row" [class.selected]="isSelected(envio.Id)">
+              <td class="checkbox-col">
+                <input type="checkbox" [checked]="isSelected(envio.Id)" (change)="toggleSelection(envio.Id)">
+              </td>
               <td><strong>{{ envio.Numero_Guia }}</strong></td>
               <td>{{ envio.Nombre_Cliente }}</td>
               <td>{{ envio.Destino }}</td>

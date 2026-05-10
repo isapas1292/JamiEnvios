@@ -49,6 +49,7 @@ export class Employee implements OnInit {
       next: (data) => {
         this.ngZone.run(() => {
           this.enviosActivos = data.filter(e => e.Estado_Envio_Id !== 5 && e.Estado_Envio_Id !== 6);
+          this.selectedIds.clear(); // Clear selection on reload
           this.loading = false;
           this.cdr.detectChanges();
         });
@@ -136,7 +137,11 @@ export class Employee implements OnInit {
   private finalizeBulk(done: number, errs: number, estadoIdNum: number) {
     this.bulkLoading = false;
     if (estadoIdNum === 5 || estadoIdNum === 6) {
-      this.enviosActivos = this.enviosActivos.filter(e => !this.selectedIds.has(e.Id));
+      // Remove those that were successfully updated to a final state
+      this.enviosActivos = this.enviosActivos.filter(e => {
+        const isSelected = this.selectedIds.has(e.Id);
+        return !(isSelected && e.Estado_Envio_Id === estadoIdNum);
+      });
     }
     this.selectedIds.clear();
     this.bulkEstado = '';
