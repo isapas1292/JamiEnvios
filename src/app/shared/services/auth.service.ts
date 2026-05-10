@@ -42,13 +42,14 @@ export class AuthService {
   }
 
   // Registro de nuevo usuario
-  register(nombre: string, email: string, password: string, phone?: string): Observable<RegisterResponse> {
+  register(nombre: string, email: string, password: string, phone?: string, cedula?: string): Observable<RegisterResponse> {
     return this.http.post<RegisterResponse>(`${this.apiUrl}/usuarios`, {
       nombre,
       email,
       password,
       rol_id: 1,  // Usuario normal por defecto
-      telefono: phone
+      telefono: phone,
+      cedula: cedula
     }).pipe(
       tap(response => {
         console.log('Usuario registrado exitosamente');

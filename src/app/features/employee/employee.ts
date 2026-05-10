@@ -29,7 +29,7 @@ export class Employee implements OnInit {
   bulkEstado: string = '';
   bulkLoading = false;
 
-  nuevoUsuario = { nombre: '', email: '', password: '', phone: '' };
+  nuevoUsuario = { nombre: '', email: '', password: '', phone: '', cedula: '' };
   creandoUsuario = false;
 
   constructor(
@@ -161,12 +161,13 @@ export class Employee implements OnInit {
       this.nuevoUsuario.nombre,
       this.nuevoUsuario.email,
       this.nuevoUsuario.password,
-      this.nuevoUsuario.phone
+      this.nuevoUsuario.phone,
+      this.nuevoUsuario.cedula
     ).subscribe({
       next: () => {
         this.creandoUsuario = false;
         alert('Usuario creado correctamente');
-        this.nuevoUsuario = { nombre: '', email: '', password: '', phone: '' };
+        this.nuevoUsuario = { nombre: '', email: '', password: '', phone: '', cedula: '' };
       },
       error: (err) => {
         console.error('Error creando usuario:', err);

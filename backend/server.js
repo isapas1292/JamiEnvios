@@ -42,7 +42,7 @@ app.get('/usuarios', async (req, res) => {
 
 app.post('/usuarios', async (req, res) => {
     try {
-        const { nombre, email, password, rol_id, telefono } = req.body;
+        const { nombre, email, password, rol_id, telefono, cedula } = req.body;
         
         if (!nombre || !email || !password) {
             return res.status(400).json({ error: "Nombre, email y password son requeridos" });
@@ -52,9 +52,16 @@ app.post('/usuarios', async (req, res) => {
         // Asignar rol_id = 1 (User) por defecto si no se proporciona
         const finalRolId = rol_id || 1;
         
+        request.input('nombre', sql.VarChar, nombre);
+        request.input('email', sql.VarChar, email);
+        request.input('password', sql.VarChar, password);
+        request.input('rol_id', sql.Int, finalRolId);
+        request.input('phone', sql.VarChar, telefono || null);
+        request.input('cedula', sql.VarChar, cedula || null);
+
         await request.query(`
-            INSERT INTO Usuarios (Nombre, Email, Password, Rol_Id, Phone) 
-            VALUES ('${nombre}', '${email}', '${password}', ${finalRolId}, ${telefono ? `'${telefono}'` : 'NULL'})
+            INSERT INTO Usuarios (Nombre, Email, Password, Rol_Id, Phone, DocumentodeIdentidad) 
+            VALUES (@nombre, @email, @password, @rol_id, @phone, @cedula)
         `);
         
         res.json({ mensaje: "Usuario agregado correctamente" });

@@ -18,6 +18,7 @@ export class RegisterComponent {
     fullName: '',
     email: '',
     phone: '',
+    cedula: '',
     password: '',
     confirmPassword: '',
     agreeTerms: false
@@ -86,7 +87,7 @@ export class RegisterComponent {
   }
 
   //Campos vacíos
-  if (!this.model.fullName || !this.model.email || !this.model.phone || !this.model.password || !this.model.confirmPassword) {
+  if (!this.model.fullName || !this.model.email || !this.model.phone || !this.model.cedula || !this.model.password || !this.model.confirmPassword) {
     Swal.fire({
       icon: 'warning',
       title: 'Campos incompletos',
@@ -117,7 +118,8 @@ export class RegisterComponent {
       this.model.fullName,
       this.model.email,
       this.model.password,
-      fullPhoneNumber
+      fullPhoneNumber,
+      this.model.cedula
     ).subscribe({
    next: (response) => {
       this.loading = false;
