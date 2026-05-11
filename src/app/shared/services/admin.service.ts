@@ -14,12 +14,17 @@ export interface AdminEnvio {
   Id: number;
   Numero_Guia: string;
   Nombre_Cliente: string;
+  Dni_Cliente?: string;
+  Telefono_Cliente?: string;
   Fecha_Recepcion: string;
   Estado_Actual?: string;
   Estado_Nombre?: string; // Returned from JOIN
   Estado_Envio_Id: number;
   Destino: string;
   Observaciones: string;
+  Nombre_Recibe?: string;
+  Cedula_Recibe?: string;
+  Telefono_Recibe?: string;
   Usuario_Id: number;
 }
 

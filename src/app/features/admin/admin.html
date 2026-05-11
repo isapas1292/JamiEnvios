@@ -40,7 +40,7 @@
           <div class="table-responsive">
             <table class="admin-table">
               <thead>
-                <tr><th>Guía</th><th>Cliente</th><th>Destino</th><th>Estado</th></tr>
+                <tr><th>Guía</th><th>Cliente</th><th>Destino</th><th>Estado</th><th>Recibe</th><th>Cédula Recibe</th></tr>
               </thead>
               <tbody>
                 <tr *ngFor="let envio of envios | slice:0:5">
@@ -48,6 +48,8 @@
                   <td>{{ envio.Nombre_Cliente }}</td>
                   <td>{{ envio.Destino }}</td>
                   <td><span class="status-badge" [ngClass]="'status-' + (envio.Estado_Nombre || envio.Estado_Actual || '').toLowerCase().replace(' ', '-')">{{ envio.Estado_Nombre || envio.Estado_Actual }}</span></td>
+                  <td>{{ envio.Nombre_Recibe || 'N/A' }}</td> 
+                  <td>{{ envio.Cedula_Recibe || 'N/A' }}</td>
                 </tr>
               </tbody>
             </table>
@@ -101,56 +103,83 @@
             <button class="btn btn-sm btn-secondary" (click)="selectedEnvioIds.clear()">✖ Limpiar selección</button>
           </div>
 
-          <div class="table-responsive">
-            <table class="admin-table">
-              <thead>
-                <tr>
-                  <th class="check-col">
-                    <input type="checkbox"
-                      [checked]="allEnviosSelected"
-                      [indeterminate]="isBulkPartialAdmin"
-                      (change)="toggleAllEnvios($any($event.target).checked)"
-                      title="Seleccionar todos">
-                  </th>
-                  <th>Guía</th><th>Cliente</th><th>Fecha</th><th>Destino</th><th>Estado</th><th>Observaciones</th><th>Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let envio of envios" [class.row-selected]="isEnvioSelected(envio.Id)">
-                  <td class="check-col">
-                    <input type="checkbox" [checked]="isEnvioSelected(envio.Id)" (change)="toggleEnvioSelection(envio.Id)">
-                  </td>
-                  <ng-container *ngIf="editingEnvioId !== envio.Id">
-                    <td class="id-col">{{ envio.Numero_Guia }}</td>
-                    <td>{{ envio.Nombre_Cliente }}</td>
-                    <td>{{ envio.Fecha_Recepcion | date:'shortDate' }}</td>
-                    <td>{{ envio.Destino }}</td>
-                    <td><span class="status-badge" [ngClass]="'status-' + (envio.Estado_Nombre || envio.Estado_Actual || '').toLowerCase().replace(' ', '-')">{{ envio.Estado_Nombre || envio.Estado_Actual }}</span></td>
-                    <td>{{ envio.Observaciones || 'N/A' }}</td>
-                    <td><button class="btn btn-sm btn-outline" (click)="startEditing(envio)">✏️ Editar</button></td>
-                  </ng-container>
-                  <ng-container *ngIf="editingEnvioId === envio.Id">
-                    <td><input type="text" [(ngModel)]="editedEnvio.Numero_Guia" class="form-input"></td>
-                    <td><input type="text" [(ngModel)]="editedEnvio.Nombre_Cliente" class="form-input"></td>
-                    <td>{{ envio.Fecha_Recepcion | date:'shortDate' }}</td>
-                    <td><input type="text" [(ngModel)]="editedEnvio.Destino" class="form-input"></td>
-                    <td>
-                      <select [(ngModel)]="editedEnvio.Estado_Envio_Id" class="form-select">
-                        <option [ngValue]="1">Pendiente</option>
-                        <option [ngValue]="2">En Tránsito</option>
-                        <option [ngValue]="3">En Aduana</option>
-                        <option [ngValue]="4">En Reparto</option>
-                        <option [ngValue]="5">Entregado</option>
-                        <option [ngValue]="6">Cancelado</option>
-                      </select>
-                    </td>
-                    <td><input type="text" [(ngModel)]="editedEnvio.Observaciones" class="form-input"></td>
-                    <td>
-                      <button class="btn btn-sm btn-primary" (click)="saveEditing()">Guardar</button>
-                      <button class="btn btn-sm btn-secondary" (click)="cancelEditing()">Cancelar</button>
-                    </td>
-                  </ng-container>
-                </tr>
+      <div class="table-responsive">
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th class="check-col">
+          <input type="checkbox" [checked]="allEnviosSelected" [indeterminate]="isBulkPartialAdmin" (change)="toggleAllEnvios($any($event.target).checked)">
+        </th>
+        <th>Guía</th>
+        <th>Cliente</th>
+        <th>DNI</th>
+        <th>Teléfono CLIENTE</th>
+        <th>Fecha</th>
+        <th>Destino</th>
+        <th>Estado</th>
+        <th>Observaciones</th>
+        <th>Recibe</th>
+        <th>Cédula Recibe</th>
+        <th>Teléfono RECIBE</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let envio of envios" [class.row-selected]="isEnvioSelected(envio.Id)">
+        
+        <ng-container *ngIf="editingEnvioId !== envio.Id">
+          <td class="check-col">
+            <input type="checkbox" [checked]="isEnvioSelected(envio.Id)" (change)="toggleEnvioSelection(envio.Id)">
+          </td>
+          <td class="id-col">{{ envio.Numero_Guia }}</td>
+          <td>{{ envio.Nombre_Cliente }}</td>
+          <td>{{ envio.Dni_Cliente || 'N/A' }}</td>
+          <td>{{ envio.Telefono_Cliente || 'N/A' }}</td>
+          <td>{{ envio.Fecha_Recepcion | date:'shortDate' }}</td>
+          <td>{{ envio.Destino }}</td>
+          <td>
+            <span class="status-badge" [ngClass]="'status-' + (envio.Estado_Nombre || envio.Estado_Actual || '').toLowerCase().replace(' ', '-')">
+              {{ envio.Estado_Nombre || envio.Estado_Actual }}
+            </span>
+          </td>
+          <td>{{ envio.Observaciones || 'N/A' }}</td>
+          <td>{{ envio.Nombre_Recibe || 'N/A' }}</td>
+          <td>{{ envio.Cedula_Recibe || 'N/A' }}</td>
+          <td>{{ envio.Telefono_Recibe || 'N/A' }}</td>
+          <td>
+            <button class="btn btn-sm btn-outline" (click)="startEditing(envio)">✏️ Editar</button>
+          </td>
+        </ng-container>
+
+        <ng-container *ngIf="editingEnvioId === envio.Id">
+          <td class="check-col"></td> 
+          
+          <td><input type="text" [(ngModel)]="editedEnvio.Numero_Guia" class="form-input"></td>
+          <td><input type="text" [(ngModel)]="editedEnvio.Nombre_Cliente" class="form-input"></td>
+          <td><input type="text" [(ngModel)]="editedEnvio.Dni_Cliente" class="form-input"></td>
+          <td><input type="text" [(ngModel)]="editedEnvio.Telefono_Cliente" class="form-input"></td>
+          
+          <td>{{ envio.Fecha_Recepcion | date:'shortDate' }}</td>
+          
+          <td><input type="text" [(ngModel)]="editedEnvio.Destino" class="form-input"></td>
+          <td>
+            <select [(ngModel)]="editedEnvio.Estado_Envio_Id" class="form-select">
+              <option *ngFor="let est of estadosValidos" [ngValue]="est.id">{{ est.nombre }}</option>
+            </select>
+          </td>
+          <td><input type="text" [(ngModel)]="editedEnvio.Observaciones" class="form-input"></td>
+          <td><input type="text" [(ngModel)]="editedEnvio.Nombre_Recibe" class="form-input"></td>
+          <td><input type="text" [(ngModel)]="editedEnvio.Cedula_Recibe" class="form-input"></td>
+          <td><input type="text" [(ngModel)]="editedEnvio.Telefono_Recibe" class="form-input"></td>
+          
+          <td class="actions-cell">
+            <div class="action-buttons-stack">
+              <button class="btn btn-sm btn-primary" (click)="saveEditing()">Guardar</button>
+              <button class="btn btn-sm btn-secondary" (click)="cancelEditing()">Canc.</button>
+            </div>
+          </td>
+        </ng-container>
+      </tr>
                 <tr *ngIf="envios.length === 0">
                   <td colspan="8" class="text-center">No se encontraron envíos con estos filtros.</td>
                 </tr>

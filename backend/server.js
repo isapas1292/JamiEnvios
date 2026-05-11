@@ -302,17 +302,35 @@ app.put('/api/envios/:id/estado', async (req, res) => {
 app.put('/api/admin/envios/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const { Numero_Guia, Nombre_Cliente, Estado_Envio_Id, Destino, Observaciones } = req.body;
+        const { Numero_Guia, Nombre_Cliente, Dni_Cliente, Telefono_Cliente, Estado_Envio_Id, Destino, Observaciones, Nombre_Recibe, Cedula_Recibe, Telefono_Recibe } = req.body;
 
         const request = new sql.Request();
+        // 2. Usamos parámetros (.input) por seguridad y para manejar Nulllos
+        request.input('id', sql.Int, id);
+        request.input('guia', sql.VarChar, Numero_Guia);
+        request.input('cliente', sql.VarChar, Nombre_Cliente);
+        request.input('dni', sql.VarChar, Dni_Cliente || null);
+        request.input('telefono', sql.VarChar, Telefono_Cliente || null);
+        request.input('estadoId', sql.Int, Estado_Envio_Id);
+        request.input('destino', sql.VarChar, Destino);
+        request.input('obs', sql.VarChar, Observaciones || '');
+        request.input('recibe', sql.VarChar, Nombre_Recibe || null);
+        request.input('cedula', sql.VarChar, Cedula_Recibe || null);
+        request.input('telefonoRecibe', sql.VarChar, Telefono_Recibe || null);
         const result = await request.query(`
             UPDATE Envios 
-            SET Numero_Guia = '${Numero_Guia}', 
-                Nombre_Cliente = '${Nombre_Cliente}', 
-                Estado_Envio_Id = ${Estado_Envio_Id}, 
-                Destino = '${Destino}', 
-                Observaciones = '${Observaciones}'
-            WHERE Id = ${id}
+            SET Numero_Guia = @guia, 
+                Nombre_Cliente = @cliente, 
+                Dni_Cliente = @dni,
+                Telefono_Cliente = @telefono,
+                Estado_Envio_Id = @estadoId, 
+                Destino = @destino, 
+                Observaciones = @obs,
+                Nombre_Recibe = @recibe,
+                Cedula_Recibe = @cedula,
+                Telefono_Recibe = @telefonoRecibe
+
+            WHERE Id = @id
         `);
 
         if (result.rowsAffected[0] === 0) {
