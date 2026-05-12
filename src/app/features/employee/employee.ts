@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AdminService, AdminEnvio, EmpleadoData, AdminUsuario } from '../../shared/services/admin.service';
+import { AdminService, AdminEnvio, AdminUsuario } from '../../shared/services/admin.service';
 import { AuthService } from '../../shared/services/auth.service';
 
 @Component({
@@ -32,11 +32,6 @@ export class Employee implements OnInit {
   nuevoUsuario = { nombre: '', email: '', password: '', phone: '', cedula: '' };
   creandoUsuario = false;
 
-  // Empleados table state
-  empleados: EmpleadoData[] = [];
-  empleadosLoading = false;
-  filtroDocumento: string = '';
-
   // Clientes state
   clientes: AdminUsuario[] = [];
   clientesLoading = false;
@@ -51,28 +46,7 @@ export class Employee implements OnInit {
 
   ngOnInit() {
     this.loadEnvios();
-    this.loadEmpleados();
     this.loadClientes();
-  }
-
-  loadEmpleados() {
-    this.empleadosLoading = true;
-    this.adminService.getEmpleados(this.filtroDocumento).subscribe({
-      next: (data) => {
-        this.ngZone.run(() => {
-          this.empleados = data;
-          this.empleadosLoading = false;
-          this.cdr.detectChanges();
-        });
-      },
-      error: (err) => {
-        this.ngZone.run(() => {
-          console.error('Error cargando empleados', err);
-          this.empleadosLoading = false;
-          this.cdr.detectChanges();
-        });
-      }
-    });
   }
 
   loadClientes() {
