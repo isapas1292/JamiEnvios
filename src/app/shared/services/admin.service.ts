@@ -10,6 +10,18 @@ export interface AdminUsuario {
   Rol_Id: number;
 }
 
+export interface EmpleadoData {
+  Id: number;
+  Usuario_Id?: number;
+  DocumentodeIdentidad: string;
+  Nombre: string;
+  Email: string;
+  Telefono?: string;
+  Cargo?: string;
+  FechaIngreso: string;
+  Activo: boolean;
+}
+
 export interface AdminEnvio {
   Id: number;
   Numero_Guia: string;
@@ -67,5 +79,11 @@ export class AdminService {
 
   updateEnvio(id: number, envio: Partial<AdminEnvio>): Observable<any> {
     return this.http.put(`${this.apiUrl}/envios/${id}`, envio);
+  }
+
+  getEmpleados(documento?: string): Observable<EmpleadoData[]> {
+    let params = new HttpParams();
+    if (documento) params = params.set('documento', documento);
+    return this.http.get<EmpleadoData[]>(`http://localhost:3000/api/empleados`, { params });
   }
 }

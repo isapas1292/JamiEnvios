@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AdminService, AdminEnvio } from '../../shared/services/admin.service';
+import { AdminService, AdminEnvio, EmpleadoData, AdminUsuario } from '../../shared/services/admin.service';
 import { AuthService } from '../../shared/services/auth.service';
 
 @Component({
@@ -32,6 +32,16 @@ export class Employee implements OnInit {
   nuevoUsuario = { nombre: '', email: '', password: '', phone: '', cedula: '' };
   creandoUsuario = false;
 
+  // Empleados table state
+  empleados: EmpleadoData[] = [];
+  empleadosLoading = false;
+  filtroDocumento: string = '';
+
+  // Clientes state
+  clientes: AdminUsuario[] = [];
+  clientesLoading = false;
+  filtroCliente: string = '';
+
   constructor(
     private adminService: AdminService,
     private authService: AuthService,
@@ -41,6 +51,48 @@ export class Employee implements OnInit {
 
   ngOnInit() {
     this.loadEnvios();
+    this.loadEmpleados();
+    this.loadClientes();
+  }
+
+  loadEmpleados() {
+    this.empleadosLoading = true;
+    this.adminService.getEmpleados(this.filtroDocumento).subscribe({
+      next: (data) => {
+        this.ngZone.run(() => {
+          this.empleados = data;
+          this.empleadosLoading = false;
+          this.cdr.detectChanges();
+        });
+      },
+      error: (err) => {
+        this.ngZone.run(() => {
+          console.error('Error cargando empleados', err);
+          this.empleadosLoading = false;
+          this.cdr.detectChanges();
+        });
+      }
+    });
+  }
+
+  loadClientes() {
+    this.clientesLoading = true;
+    this.adminService.getUsuarios({ nombre: this.filtroCliente }).subscribe({
+      next: (data) => {
+        this.ngZone.run(() => {
+          this.clientes = data.filter(u => u.Rol_Id === 1);
+          this.clientesLoading = false;
+          this.cdr.detectChanges();
+        });
+      },
+      error: (err) => {
+        this.ngZone.run(() => {
+          console.error('Error cargando clientes', err);
+          this.clientesLoading = false;
+          this.cdr.detectChanges();
+        });
+      }
+    });
   }
 
   loadEnvios() {
@@ -168,6 +220,7 @@ export class Employee implements OnInit {
         this.creandoUsuario = false;
         alert('Usuario creado correctamente');
         this.nuevoUsuario = { nombre: '', email: '', password: '', phone: '', cedula: '' };
+        this.loadClientes(); // Reload list
       },
       error: (err) => {
         console.error('Error creando usuario:', err);

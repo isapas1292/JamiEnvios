@@ -123,4 +123,89 @@
       </div>
     </div>
   </div>
+
+  <div class="card mt-4">
+    <div class="card-header">
+      <h2>Directorio de Empleados</h2>
+      <div class="search-box">
+        <input type="text" [(ngModel)]="filtroDocumento" placeholder="Buscar por Documento de Identidad..." class="form-input">
+        <button class="btn btn-primary" (click)="loadEmpleados()">Buscar</button>
+      </div>
+    </div>
+    <div class="card-body">
+      @if (empleadosLoading) {
+        <div class="loading-state">Cargando empleados...</div>
+      } @else if (empleados.length === 0) {
+        <div class="empty-state">
+          <p>No se encontraron empleados con ese documento.</p>
+        </div>
+      } @else {
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Documento</th>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Cargo</th>
+                <th>Teléfono</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (emp of empleados; track emp.Id) {
+                <tr>
+                  <td><strong>{{ emp.DocumentodeIdentidad }}</strong></td>
+                  <td>{{ emp.Nombre }}</td>
+                  <td>{{ emp.Email }}</td>
+                  <td>{{ emp.Cargo || 'N/A' }}</td>
+                  <td>{{ emp.Telefono || 'N/A' }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+  </div>
+
+  <div class="card mt-4">
+    <div class="card-header">
+      <h2>Directorio de Clientes Registrados</h2>
+      <div class="search-box">
+        <input type="text" [(ngModel)]="filtroCliente" placeholder="Buscar por Nombre..." class="form-input">
+        <button class="btn btn-primary" (click)="loadClientes()">Buscar</button>
+      </div>
+    </div>
+    <div class="card-body">
+      @if (clientesLoading) {
+        <div class="loading-state">Cargando clientes...</div>
+      } @else if (clientes.length === 0) {
+        <div class="empty-state">
+          <p>No hay clientes registrados o encontrados.</p>
+        </div>
+      } @else {
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Teléfono</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (cliente of clientes; track cliente.Id) {
+                <tr>
+                  <td>{{ cliente.Nombre }}</td>
+                  <td>{{ cliente.Email }}</td>
+                  <td>{{ cliente.Phone || 'N/A' }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+  </div>
+
 </div>

@@ -343,6 +343,45 @@ app.put('/api/admin/envios/:id', async (req, res) => {
     }
 });
 
+app.get('/api/empleados', async (req, res) => {
+    try {
+        let query = `SELECT * FROM Empleados WHERE 1=1`;
+        const request = new sql.Request();
+
+        if (req.query.documento) {
+            query += ` AND DocumentodeIdentidad LIKE @documento`;
+            request.input('documento', sql.VarChar, `%${req.query.documento}%`);
+        }
+
+        const result = await request.query(query);
+        res.json(result.recordset);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.post('/api/empleados', async (req, res) => {
+    try {
+        const { Usuario_Id, DocumentodeIdentidad, Nombre, Email, Telefono, Cargo } = req.body;
+        const request = new sql.Request();
+        
+        request.input('usuario_id', sql.Int, Usuario_Id || null);
+        request.input('doc', sql.VarChar, DocumentodeIdentidad);
+        request.input('nombre', sql.VarChar, Nombre);
+        request.input('email', sql.VarChar, Email);
+        request.input('telefono', sql.VarChar, Telefono || null);
+        request.input('cargo', sql.VarChar, Cargo || null);
+
+        await request.query(`
+            INSERT INTO Empleados (Usuario_Id, DocumentodeIdentidad, Nombre, Email, Telefono, Cargo) 
+            VALUES (@usuario_id, @doc, @nombre, @email, @telefono, @cargo)
+        `);
+        res.json({ mensaje: "Empleado agregado correctamente" });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 app.listen(3000, () => {
     console.log("Servidor en http://localhost:3000");
 });
