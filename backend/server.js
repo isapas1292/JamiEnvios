@@ -180,6 +180,11 @@ app.get('/api/admin/usuarios', async (req, res) => {
             query += ` AND Email LIKE @email`;
             request.input('email', sql.VarChar, `%${req.query.email}%`);
         }
+
+        if (req.query.documento) {
+            query += ` AND DocumentodeIdentidad LIKE @documento`;
+            request.input('documento', sql.VarChar, `%${req.query.documento}%`);
+        }
         
         query += ` ORDER BY Id DESC`;
 
@@ -214,6 +219,16 @@ app.get('/api/admin/envios', async (req, res) => {
                 query += ` AND e.Estado_Envio_Id = @estadoId`;
                 request.input('estadoId', sql.Int, parseInt(req.query.estado));
             }
+        }
+
+        if (req.query.guia) {
+            query += ` AND e.Numero_Guia LIKE @guia`;
+            request.input('guia', sql.VarChar, `%${req.query.guia}%`);
+        }
+
+        if (req.query.recibe) {
+            query += ` AND e.Nombre_Recibe LIKE @recibe`;
+            request.input('recibe', sql.VarChar, `%${req.query.recibe}%`);
         }
 
         if (req.query.destino) {

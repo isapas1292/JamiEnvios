@@ -53,6 +53,7 @@ export class AdminService {
     if (filters) {
       if (filters.nombre) params = params.set('nombre', filters.nombre);
       if (filters.email) params = params.set('email', filters.email);
+      if (filters.documento) params = params.set('documento', filters.documento);
       if (filters.limit) params = params.set('limit', filters.limit);
     }
     return this.http.get<AdminUsuario[]>(`${this.apiUrl}/usuarios`, { params });
@@ -61,7 +62,9 @@ export class AdminService {
   getEnvios(filters?: any): Observable<AdminEnvio[]> {
     let params = new HttpParams();
     if (filters) {
+      if (filters.guia) params = params.set('guia', filters.guia);
       if (filters.cliente) params = params.set('cliente', filters.cliente);
+      if (filters.recibe) params = params.set('recibe', filters.recibe);
       if (filters.estado) params = params.set('estado', filters.estado);
       if (filters.destino) params = params.set('destino', filters.destino);
       if (filters.direccion) params = params.set('direccion', filters.direccion);

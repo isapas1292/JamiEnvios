@@ -13,8 +13,8 @@ import { Employee } from '../employee/employee';
   styleUrl: './admin.css',
 })
 export class Admin implements OnInit {
-  activeTab: 'dashboard' | 'envios' | 'usuarios' | 'empleado' = 'dashboard';
-  private readonly VALID_TABS = ['dashboard', 'envios', 'usuarios', 'empleado'] as const;
+  activeTab: 'dashboard' | 'envios' | 'usuarios' | 'empleado' | 'empleados_list' = 'dashboard';
+  private readonly VALID_TABS = ['dashboard', 'envios', 'usuarios', 'empleado', 'empleados_list'] as const;
 
   // Dashboard stats
   stats = [
@@ -25,10 +25,13 @@ export class Admin implements OnInit {
   // Data
   usuarios: AdminUsuario[] = [];
   envios: AdminEnvio[] = [];
+  empleados: any[] = [];
 
   // Filters
   enviosFilters = {
+    guia: '',
     cliente: '',
+    recibe: '',
     estado: 'Activos',
     destino: '',
     direccion: '',
@@ -65,7 +68,8 @@ export class Admin implements OnInit {
     { id: 6, nombre: 'Cancelado' }
   ];
 
-  usuariosFilters = { nombre: '', email: '' };
+  usuariosFilters = { nombre: '', email: '', documento: '' };
+  empleadosFilters = { documento: '' };
 
   constructor(
     private adminService: AdminService,
@@ -85,9 +89,10 @@ export class Admin implements OnInit {
     });
     this.loadEnvios();
     this.loadUsuarios();
+    this.loadEmpleados();
   }
 
-  setTab(tab: 'dashboard' | 'envios' | 'usuarios' | 'empleado') {
+  setTab(tab: 'dashboard' | 'envios' | 'usuarios' | 'empleado' | 'empleados_list') {
     this.activeTab = tab;
     this.router.navigate([], {
       relativeTo: this.route,
@@ -134,7 +139,7 @@ export class Admin implements OnInit {
   }
 
   resetEnviosFilters() {
-    this.enviosFilters = { cliente: '', estado: 'Activos', destino: '', direccion: '', fechaInicio: '', fechaFin: '' };
+    this.enviosFilters = { guia: '', cliente: '', recibe: '', estado: 'Activos', destino: '', direccion: '', fechaInicio: '', fechaFin: '' };
     this.loadEnvios();
   }
 
@@ -165,8 +170,30 @@ export class Admin implements OnInit {
   }
 
   resetUsuariosFilters() {
-    this.usuariosFilters = { nombre: '', email: '' };
+    this.usuariosFilters = { nombre: '', email: '', documento: '' };
     this.loadUsuarios();
+  }
+
+  loadEmpleados() {
+    this.adminService.getEmpleados(this.empleadosFilters.documento).subscribe({
+      next: (data) => {
+        this.ngZone.run(() => {
+          this.empleados = data;
+          this.cdr.detectChanges();
+        });
+      },
+      error: (err) => {
+        this.ngZone.run(() => {
+          console.error('Error cargando empleados', err);
+          this.cdr.detectChanges();
+        });
+      }
+    });
+  }
+
+  resetEmpleadosFilters() {
+    this.empleadosFilters = { documento: '' };
+    this.loadEmpleados();
   }
 
   // ── Bulk selection ────────────────────────────────────────────────────────
