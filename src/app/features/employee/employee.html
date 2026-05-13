@@ -44,7 +44,10 @@
               </th>
               <th>N° Guía</th>
               <th>Cliente</th>
+              <th>Telefono Del Cliente</th>
               <th>Destino</th>
+              <th>Recibe</th>
+              <th>Telefono De Quien Recibe</th>
               <th>Fecha Ingreso</th>
               <th>Estado Actual</th>
               <th>Acciones</th>
@@ -58,7 +61,10 @@
               </td>
               <td><strong>{{ envio.Numero_Guia }}</strong></td>
               <td>{{ envio.Nombre_Cliente }}</td>
+              <td>{{ envio.Telefono_Cliente || 'N/A' }}</td>
               <td>{{ envio.Destino }}</td>
+              <td>{{ envio.Nombre_Recibe || 'N/A' }}</td>
+              <td>{{ envio.Telefono_Recibe || 'N/A' }}</td>
               <td>{{ envio.Fecha_Recepcion | date:'dd/MM/yyyy' }}</td>
               <td>
                 <span class="status-badge"
