@@ -130,6 +130,56 @@
     </div>
   </div>
 
+  <div class="card mt-4">
+    <div class="card-header">
+      <h2>Crear Nuevo Envío</h2>
+    </div>
+    <div class="card-body">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>N° Guía *</label>
+          <input type="text" [(ngModel)]="nuevoEnvio.Numero_Guia" class="form-input" placeholder="Ej. G-12345">
+        </div>
+        <div class="form-group">
+          <label>Nombre del Cliente *</label>
+          <input type="text" [(ngModel)]="nuevoEnvio.Nombre_Cliente" class="form-input" placeholder="Nombre completo">
+        </div>
+        <div class="form-group">
+          <label>DNI/Cédula Cliente</label>
+          <input type="text" [(ngModel)]="nuevoEnvio.Dni_Cliente" class="form-input" placeholder="Documento de identidad">
+        </div>
+        <div class="form-group">
+          <label>Teléfono Cliente</label>
+          <input type="text" [(ngModel)]="nuevoEnvio.Telefono_Cliente" class="form-input" placeholder="Teléfono del remitente">
+        </div>
+        <div class="form-group">
+          <label>Destino *</label>
+          <input type="text" [(ngModel)]="nuevoEnvio.Destino" class="form-input" placeholder="Ej. Santiago, RD">
+        </div>
+        <div class="form-group">
+          <label>Nombre Recibe</label>
+          <input type="text" [(ngModel)]="nuevoEnvio.Nombre_Recibe" class="form-input" placeholder="Persona que recibe">
+        </div>
+        <div class="form-group">
+          <label>Cédula Recibe</label>
+          <input type="text" [(ngModel)]="nuevoEnvio.Cedula_Recibe" class="form-input" placeholder="Cédula de quien recibe">
+        </div>
+        <div class="form-group">
+          <label>Teléfono Recibe</label>
+          <input type="text" [(ngModel)]="nuevoEnvio.Telefono_Recibe" class="form-input" placeholder="Teléfono del destinatario">
+        </div>
+        <div class="form-group full-width">
+          <label>Observaciones</label>
+          <textarea [(ngModel)]="nuevoEnvio.Observaciones" class="form-input" placeholder="Detalles adicionales del envío" rows="3"></textarea>
+        </div>
+      </div>
+      <div class="form-actions mt-3">
+        <button class="btn btn-primary" (click)="crearEnvio()" [disabled]="creandoEnvio">
+          {{ creandoEnvio ? 'Creando...' : 'Registrar Envío' }}
+        </button>
+      </div>
+    </div>
+  </div>
 
 
   <div class="card mt-4">

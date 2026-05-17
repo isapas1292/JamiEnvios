@@ -32,6 +32,9 @@ export class Employee implements OnInit {
   nuevoUsuario = { nombre: '', email: '', password: '', phone: '', cedula: '' };
   creandoUsuario = false;
 
+  nuevoEnvio: any = {};
+  creandoEnvio = false;
+
   // Clientes state
   clientes: AdminUsuario[] = [];
   clientesLoading = false;
@@ -200,6 +203,39 @@ export class Employee implements OnInit {
         console.error('Error creando usuario:', err);
         this.creandoUsuario = false;
         alert('Hubo un error al crear el usuario. Revisa la consola para más detalles.');
+      }
+    });
+  }
+
+  crearEnvio() {
+    if (!this.nuevoEnvio.Numero_Guia || !this.nuevoEnvio.Nombre_Cliente || !this.nuevoEnvio.Destino) {
+      alert('Número de guía, Nombre del cliente y Destino son obligatorios.');
+      return;
+    }
+    
+    // Asignar Usuario_Id usando el usuario en sesión si aplica, o uno por defecto
+    const usuarioStr = localStorage.getItem('usuario');
+    if (usuarioStr) {
+      try {
+        const u = JSON.parse(usuarioStr);
+        this.nuevoEnvio.Usuario_Id = u.id || 1;
+      } catch (e) {
+        this.nuevoEnvio.Usuario_Id = 1;
+      }
+    }
+
+    this.creandoEnvio = true;
+    this.adminService.createEnvio(this.nuevoEnvio).subscribe({
+      next: () => {
+        this.creandoEnvio = false;
+        alert('Envío registrado exitosamente');
+        this.nuevoEnvio = {};
+        this.loadEnvios(); // Reload list
+      },
+      error: (err) => {
+        console.error('Error creando envío:', err);
+        this.creandoEnvio = false;
+        alert('Hubo un error al registrar el envío. Verifica la consola.');
       }
     });
   }

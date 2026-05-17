@@ -13,8 +13,8 @@ import { Employee } from '../employee/employee';
   styleUrl: './admin.css',
 })
 export class Admin implements OnInit {
-  activeTab: 'dashboard' | 'envios' | 'usuarios' | 'empleado' | 'empleados_list' = 'dashboard';
-  private readonly VALID_TABS = ['dashboard', 'envios', 'usuarios', 'empleado', 'empleados_list'] as const;
+  activeTab: 'dashboard' | 'envios' | 'usuarios' | 'empleado' | 'empleados_list' | 'facturas' | 'crear_envio' = 'dashboard';
+  private readonly VALID_TABS = ['dashboard', 'envios', 'usuarios', 'empleado', 'empleados_list', 'facturas', 'crear_envio'] as const;
 
   // Dashboard stats
   stats = [
@@ -26,6 +26,7 @@ export class Admin implements OnInit {
   usuarios: AdminUsuario[] = [];
   envios: AdminEnvio[] = [];
   empleados: any[] = [];
+  facturas: any[] = [];
 
   // Filters
   enviosFilters = {
@@ -70,6 +71,16 @@ export class Admin implements OnInit {
 
   usuariosFilters = { nombre: '', email: '', documento: '' };
   empleadosFilters = { documento: '' };
+  facturasFilters = { cliente: '', numero: '', fechaInicio: '', fechaFin: '' };
+
+  nuevaFactura: any = { 
+    Estatus: 'No pagado',
+    Detalles: [{ Articulo: '', Cantidad: 1, Precio: 0, Descuento_Porcentaje: 0, Importe_IVA: 0, Cantidad_Total: 0 }] 
+  };
+  creandoFactura = false;
+  
+  nuevoEnvio: any = {};
+  creandoEnvio = false;
 
   constructor(
     private adminService: AdminService,
@@ -92,7 +103,7 @@ export class Admin implements OnInit {
     this.loadEmpleados();
   }
 
-  setTab(tab: 'dashboard' | 'envios' | 'usuarios' | 'empleado' | 'empleados_list') {
+  setTab(tab: 'dashboard' | 'envios' | 'usuarios' | 'empleado' | 'empleados_list' | 'facturas' | 'crear_envio') {
     this.activeTab = tab;
     this.router.navigate([], {
       relativeTo: this.route,
@@ -250,5 +261,115 @@ export class Admin implements OnInit {
     alert(errs > 0
       ? `${done} actualizados correctamente. ${errs} con error.`
       : `${done} pedidos actualizados correctamente.`);
+  }
+
+  // --- Facturas ---
+  loadFacturas() {
+    this.adminService.getFacturas(this.facturasFilters).subscribe({
+      next: (data) => {
+        this.ngZone.run(() => {
+          this.facturas = data;
+          this.cdr.detectChanges();
+        });
+      },
+      error: (err) => {
+        this.ngZone.run(() => {
+          console.error('Error cargando facturas', err);
+          this.cdr.detectChanges();
+        });
+      }
+    });
+  }
+
+  resetFacturasFilters() {
+    this.facturasFilters = { cliente: '', numero: '', fechaInicio: '', fechaFin: '' };
+    this.loadFacturas();
+  }
+
+  agregarDetalle() {
+    if (!this.nuevaFactura.Detalles) this.nuevaFactura.Detalles = [];
+    this.nuevaFactura.Detalles.push({ Articulo: '', Cantidad: 1, Precio: 0, Descuento_Porcentaje: 0, Importe_IVA: 0, Cantidad_Total: 0 });
+    this.calcularTotales();
+  }
+
+  removerDetalle(index: number) {
+    this.nuevaFactura.Detalles.splice(index, 1);
+    this.calcularTotales();
+  }
+
+  calcularTotales() {
+    let subtotal = 0;
+    let totalIva = 0;
+    for (let det of this.nuevaFactura.Detalles) {
+      let desc = (det.Precio * (det.Descuento_Porcentaje || 0)) / 100;
+      let precioConDesc = det.Precio - desc;
+      let importe = precioConDesc * (det.Cantidad || 1);
+      det.Importe_IVA = (importe * (det.Iva_Porcentaje || 0)) / 100; 
+      det.Cantidad_Total = importe + det.Importe_IVA;
+
+      subtotal += importe;
+      totalIva += det.Importe_IVA;
+    }
+    this.nuevaFactura.Cantidad = subtotal;
+    this.nuevaFactura.Importe_IVA = totalIva;
+    this.nuevaFactura.Cantidad_Total = subtotal + totalIva;
+    this.nuevaFactura.Cantidad_Pagar = this.nuevaFactura.Cantidad_Total; // Assuming no pagos previos at creation
+    this.nuevaFactura.Importe_Pendiente = this.nuevaFactura.Cantidad_Pagar - (this.nuevaFactura.Pagos || 0);
+  }
+
+  crearFactura() {
+    if (!this.nuevaFactura.Numero_Factura) {
+      alert('El número de factura es obligatorio.');
+      return;
+    }
+    this.creandoFactura = true;
+    this.adminService.createFactura(this.nuevaFactura).subscribe({
+      next: () => {
+        this.creandoFactura = false;
+        alert('Factura creada exitosamente');
+        this.nuevaFactura = { Estatus: 'No pagado', Detalles: [{ Articulo: '', Cantidad: 1, Precio: 0, Descuento_Porcentaje: 0, Importe_IVA: 0, Cantidad_Total: 0 }] };
+        this.loadFacturas();
+      },
+      error: (err) => {
+        console.error('Error creando factura:', err);
+        this.creandoFactura = false;
+        alert('Hubo un error al registrar la factura.');
+      }
+    });
+  }
+
+  // --- Crear Envio ---
+  crearEnvioAdmin() {
+    if (!this.nuevoEnvio.Numero_Guia || !this.nuevoEnvio.Nombre_Cliente || !this.nuevoEnvio.Destino) {
+      alert('Número de guía, Nombre del cliente y Destino son obligatorios.');
+      return;
+    }
+    
+    // Asignar Usuario_Id usando el usuario en sesión si aplica
+    const usuarioStr = localStorage.getItem('usuario');
+    if (usuarioStr) {
+      try {
+        const u = JSON.parse(usuarioStr);
+        this.nuevoEnvio.Usuario_Id = u.id || 1;
+      } catch (e) {
+        this.nuevoEnvio.Usuario_Id = 1;
+      }
+    }
+
+    this.creandoEnvio = true;
+    this.adminService.createEnvio(this.nuevoEnvio).subscribe({
+      next: () => {
+        this.creandoEnvio = false;
+        alert('Envío registrado exitosamente');
+        this.nuevoEnvio = {};
+        this.loadEnvios(); // Reload list
+        this.setTab('envios'); // Redirect to envios list
+      },
+      error: (err) => {
+        console.error('Error creando envío:', err);
+        this.creandoEnvio = false;
+        alert('Hubo un error al registrar el envío. Verifica la consola.');
+      }
+    });
   }
 }

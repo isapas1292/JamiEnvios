@@ -397,6 +397,135 @@ app.post('/api/empleados', async (req, res) => {
     }
 });
 
+app.post('/api/envios', async (req, res) => {
+    try {
+        const {
+            Numero_Guia, Nombre_Cliente, Dni_Cliente, Telefono_Cliente,
+            Destino, Observaciones, Nombre_Recibe, Cedula_Recibe,
+            Telefono_Recibe, Usuario_Id
+        } = req.body;
+
+        const request = new sql.Request();
+        request.input('guia', sql.VarChar, Numero_Guia);
+        request.input('cliente', sql.VarChar, Nombre_Cliente);
+        request.input('dni', sql.VarChar, Dni_Cliente || null);
+        request.input('telefono', sql.VarChar, Telefono_Cliente || null);
+        request.input('destino', sql.VarChar, Destino);
+        request.input('obs', sql.VarChar, Observaciones || '');
+        request.input('recibe', sql.VarChar, Nombre_Recibe || null);
+        request.input('cedula', sql.VarChar, Cedula_Recibe || null);
+        request.input('telefonoRecibe', sql.VarChar, Telefono_Recibe || null);
+        request.input('usuarioId', sql.Int, Usuario_Id || 1); // User ID or default
+
+        await request.query(`
+            INSERT INTO Envios 
+            (Numero_Guia, Nombre_Cliente, Dni_Cliente, Telefono_Cliente, Destino, Observaciones, Nombre_Recibe, Cedula_Recibe, Telefono_Recibe, Usuario_Id, Fecha_Recepcion, Estado_Envio_Id, Estado_Actual) 
+            VALUES 
+            (@guia, @cliente, @dni, @telefono, @destino, @obs, @recibe, @cedula, @telefonoRecibe, @usuarioId, GETDATE(), 1, 'Pendiente')
+        `);
+        res.json({ mensaje: "Envío creado correctamente" });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.post('/api/facturas', async (req, res) => {
+    try {
+        const {
+            Numero_Factura, Nombre_Cliente, Dni_Cliente, Breve_Descripcion,
+            Fecha, Vencimiento, Fecha_Pago, Estatus, Cerrado, Cobrar_IVA,
+            Firma_Cliente, Cantidad, Importe_IVA, Cantidad_Total,
+            Cantidad_Pagar, Pagos, Importe_Pendiente, Detalles
+        } = req.body;
+
+        const request = new sql.Request();
+        
+        request.input('numero', sql.VarChar, Numero_Factura);
+        request.input('nombre', sql.VarChar, Nombre_Cliente);
+        request.input('dni', sql.VarChar, Dni_Cliente || null);
+        request.input('desc', sql.VarChar, Breve_Descripcion || null);
+        request.input('fecha', sql.Date, Fecha || null);
+        request.input('vencimiento', sql.Date, Vencimiento || null);
+        request.input('fechaPago', sql.Date, Fecha_Pago || null);
+        request.input('estatus', sql.VarChar, Estatus || 'No pagado');
+        request.input('cerrado', sql.Bit, Cerrado ? 1 : 0);
+        request.input('cobrarIva', sql.Bit, Cobrar_IVA ? 1 : 0);
+        request.input('firma', sql.VarChar, Firma_Cliente || null);
+        request.input('cantidad', sql.Decimal(18,2), Cantidad || 0);
+        request.input('importeIva', sql.Decimal(18,2), Importe_IVA || 0);
+        request.input('cantidadTotal', sql.Decimal(18,2), Cantidad_Total || 0);
+        request.input('cantidadPagar', sql.Decimal(18,2), Cantidad_Pagar || 0);
+        request.input('pagos', sql.Decimal(18,2), Pagos || 0);
+        request.input('pendiente', sql.Decimal(18,2), Importe_Pendiente || 0);
+
+        const result = await request.query(`
+            INSERT INTO Facturas 
+            (Numero_Factura, Nombre_Cliente, Dni_Cliente, Breve_Descripcion, Fecha, Vencimiento, Fecha_Pago, Estatus, Cerrado, Cobrar_IVA, Firma_Cliente, Cantidad, Importe_IVA, Cantidad_Total, Cantidad_Pagar, Pagos, Importe_Pendiente)
+            OUTPUT INSERTED.Id
+            VALUES 
+            (@numero, @nombre, @dni, @desc, @fecha, @vencimiento, @fechaPago, @estatus, @cerrado, @cobrarIva, @firma, @cantidad, @importeIva, @cantidadTotal, @cantidadPagar, @pagos, @pendiente)
+        `);
+        
+        const facturaId = result.recordset[0].Id;
+        
+        if (Detalles && Detalles.length > 0) {
+            for (let det of Detalles) {
+                const detReq = new sql.Request();
+                detReq.input('facturaId', sql.Int, facturaId);
+                detReq.input('articulo', sql.VarChar, det.Articulo);
+                detReq.input('cantidad', sql.Int, det.Cantidad || 1);
+                detReq.input('unidad', sql.VarChar, det.Unidad_Venta || '');
+                detReq.input('precio', sql.Decimal(18,2), det.Precio || 0);
+                detReq.input('descuento', sql.Decimal(18,2), det.Descuento_Porcentaje || 0);
+                detReq.input('iva', sql.Decimal(18,2), det.Importe_IVA || 0);
+                detReq.input('total', sql.Decimal(18,2), det.Cantidad_Total || 0);
+                
+                await detReq.query(`
+                    INSERT INTO FacturaDetalles 
+                    (Factura_Id, Articulo, Cantidad, Unidad_Venta, Precio, Descuento_Porcentaje, Importe_IVA, Cantidad_Total)
+                    VALUES
+                    (@facturaId, @articulo, @cantidad, @unidad, @precio, @descuento, @iva, @total)
+                `);
+            }
+        }
+
+        res.json({ mensaje: "Factura creada correctamente", Id: facturaId });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.get('/api/facturas', async (req, res) => {
+    try {
+        let query = `SELECT * FROM Facturas WHERE 1=1`;
+        const request = new sql.Request();
+
+        if (req.query.cliente) {
+            query += ` AND Nombre_Cliente LIKE @cliente`;
+            request.input('cliente', sql.VarChar, '%' + req.query.cliente + '%');
+        }
+        if (req.query.numero) {
+            query += ` AND Numero_Factura LIKE @numero`;
+            request.input('numero', sql.VarChar, '%' + req.query.numero + '%');
+        }
+        if (req.query.fechaInicio) {
+            query += ` AND Fecha >= @fechaInicio`;
+            request.input('fechaInicio', sql.Date, req.query.fechaInicio);
+        }
+        if (req.query.fechaFin) {
+            query += ` AND Fecha <= @fechaFin`;
+            request.input('fechaFin', sql.Date, req.query.fechaFin);
+        }
+        
+        query += ` ORDER BY Id DESC`;
+        
+        const result = await request.query(query);
+        res.json(result.recordset);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 app.listen(3000, () => {
     console.log("Servidor en http://localhost:3000");
 });

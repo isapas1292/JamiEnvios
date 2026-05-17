@@ -6,9 +6,11 @@
     <ul class="sidebar-nav">
       <li [class.active]="activeTab === 'dashboard'"><a (click)="setTab('dashboard')"><span class="icon">📊</span> Dashboard</a></li>
       <li [class.active]="activeTab === 'envios'"><a (click)="setTab('envios')"><span class="icon">📦</span> Envíos</a></li>
+      <li [class.active]="activeTab === 'crear_envio'"><a (click)="setTab('crear_envio')" style="cursor:pointer"><span class="icon">➕</span> Crear Envío</a></li>
       <li [class.active]="activeTab === 'usuarios'"><a (click)="setTab('usuarios')"><span class="icon">👥</span> Usuarios</a></li>
       <li [class.active]="activeTab === 'empleados_list'"><a (click)="setTab('empleados_list')" style="cursor:pointer"><span class="icon">👔</span> Empleados</a></li>
       <li [class.active]="activeTab === 'empleado'"><a (click)="setTab('empleado')" style="cursor:pointer"><span class="icon">💼</span> Panel Empleado</a></li>
+      <li [class.active]="activeTab === 'facturas'"><a (click)="setTab('facturas')" style="cursor:pointer"><span class="icon">🧾</span> Facturas</a></li>
       <li class="logout-item"><a href="/login"><span class="icon">🚪</span> Salir</a></li>
     </ul>
   </aside>
@@ -261,9 +263,166 @@
         </div>
       </div>
 
+      <!-- TAB: CREAR ENVIO -->
+      <div *ngIf="activeTab === 'crear_envio'">
+        <div class="page-header"><h1>Registrar Nuevo Envío</h1></div>
+        <div class="card mt-4">
+          <div class="card-header">
+            <h2>Detalles del Envío</h2>
+          </div>
+          <div class="card-body">
+            <div class="form-grid">
+              <div class="form-group">
+                <label>N° Guía *</label>
+                <input type="text" [(ngModel)]="nuevoEnvio.Numero_Guia" class="form-input" placeholder="Ej. G-12345">
+              </div>
+              <div class="form-group">
+                <label>Nombre del Cliente *</label>
+                <input type="text" [(ngModel)]="nuevoEnvio.Nombre_Cliente" class="form-input" placeholder="Nombre completo">
+              </div>
+              <div class="form-group">
+                <label>DNI/Cédula Cliente</label>
+                <input type="text" [(ngModel)]="nuevoEnvio.Dni_Cliente" class="form-input" placeholder="Documento de identidad">
+              </div>
+              <div class="form-group">
+                <label>Teléfono Cliente</label>
+                <input type="text" [(ngModel)]="nuevoEnvio.Telefono_Cliente" class="form-input" placeholder="Teléfono del remitente">
+              </div>
+              <div class="form-group">
+                <label>Destino *</label>
+                <input type="text" [(ngModel)]="nuevoEnvio.Destino" class="form-input" placeholder="Ej. Santiago, RD">
+              </div>
+              <div class="form-group">
+                <label>Nombre Recibe</label>
+                <input type="text" [(ngModel)]="nuevoEnvio.Nombre_Recibe" class="form-input" placeholder="Persona que recibe">
+              </div>
+              <div class="form-group">
+                <label>Cédula Recibe</label>
+                <input type="text" [(ngModel)]="nuevoEnvio.Cedula_Recibe" class="form-input" placeholder="Cédula de quien recibe">
+              </div>
+              <div class="form-group">
+                <label>Teléfono Recibe</label>
+                <input type="text" [(ngModel)]="nuevoEnvio.Telefono_Recibe" class="form-input" placeholder="Teléfono del destinatario">
+              </div>
+              <div class="form-group full-width">
+                <label>Observaciones</label>
+                <textarea [(ngModel)]="nuevoEnvio.Observaciones" class="form-input" placeholder="Detalles adicionales del envío" rows="3"></textarea>
+              </div>
+            </div>
+            <div class="form-actions mt-3">
+              <button class="btn btn-primary" (click)="crearEnvioAdmin()" [disabled]="creandoEnvio">
+                {{ creandoEnvio ? 'Creando...' : 'Registrar Envío' }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- TAB: EMPLEADO -->
       <div *ngIf="activeTab === 'empleado'">
         <app-employee></app-employee>
+      </div>
+
+      <!-- TAB: FACTURAS -->
+      <div *ngIf="activeTab === 'facturas'">
+        <div class="page-header"><h1>Gestión de Facturas</h1></div>
+        
+        <div class="card mt-4">
+          <div class="card-header"><h2>Buscar Facturas</h2></div>
+          <div class="card-body">
+            <div class="filter-group">
+              <input type="text" placeholder="Cliente..." [(ngModel)]="facturasFilters.cliente" class="form-input">
+              <input type="text" placeholder="N° de factura..." [(ngModel)]="facturasFilters.numero" class="form-input">
+              <input type="date" [(ngModel)]="facturasFilters.fechaInicio" class="form-input" title="Desde la fecha">
+              <input type="date" [(ngModel)]="facturasFilters.fechaFin" class="form-input" title="Hasta la fecha">
+              <button class="btn btn-primary" (click)="loadFacturas()">Encontrar</button>
+              <button class="btn btn-secondary" (click)="resetFacturasFilters()">Limpiar</button>
+            </div>
+            
+            <div class="table-responsive mt-3" *ngIf="facturas.length > 0">
+              <table class="admin-table">
+                <thead>
+                  <tr><th>N° Factura</th><th>Cliente</th><th>Fecha</th><th>Estatus</th><th>Total</th></tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let fac of facturas">
+                    <td>{{ fac.Numero_Factura }}</td>
+                    <td>{{ fac.Nombre_Cliente }}</td>
+                    <td>{{ fac.Fecha | date:'shortDate' }}</td>
+                    <td><span class="status-badge status-{{fac.Estatus.toLowerCase().replace(' ', '-')}}">{{ fac.Estatus }}</span></td>
+                    <td>{{ fac.Cantidad_Pagar | currency:'EUR' }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mt-4">
+          <div class="card-header"><h2>Crear Factura</h2></div>
+          <div class="card-body">
+            <div class="form-grid">
+              <div class="form-group"><label>Número de factura *</label><input type="text" [(ngModel)]="nuevaFactura.Numero_Factura" class="form-input"></div>
+              <div class="form-group"><label>Cliente</label><input type="text" [(ngModel)]="nuevaFactura.Nombre_Cliente" class="form-input"></div>
+              <div class="form-group full-width"><label>Breve descripción</label><input type="text" [(ngModel)]="nuevaFactura.Breve_Descripcion" class="form-input"></div>
+              
+              <div class="form-group"><label>Fecha</label><input type="date" [(ngModel)]="nuevaFactura.Fecha" class="form-input"></div>
+              <div class="form-group"><label>Vencimiento</label><input type="date" [(ngModel)]="nuevaFactura.Vencimiento" class="form-input"></div>
+              <div class="form-group"><label>Fecha de pago</label><input type="date" [(ngModel)]="nuevaFactura.Fecha_Pago" class="form-input"></div>
+              
+              <div class="form-group"><label>Estatus</label>
+                <select [(ngModel)]="nuevaFactura.Estatus" class="form-input">
+                  <option value="Pagado">Pagado</option>
+                  <option value="No pagado">No pagado</option>
+                </select>
+              </div>
+            </div>
+
+            <hr>
+            
+            <div class="form-group">
+              <label>Cobrar IVA</label>
+              <input type="checkbox" [(ngModel)]="nuevaFactura.Cobrar_IVA">
+            </div>
+
+            <div class="table-responsive mt-3">
+              <button class="btn btn-primary btn-sm mb-2" (click)="agregarDetalle()">+ Agregar detalle de factura</button>
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Artículo</th><th>Cantidad</th><th>Precio</th><th>% Descuento</th><th>Importe IVA</th><th>Total</th><th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let det of nuevaFactura.Detalles; let i = index">
+                    <td><input type="text" [(ngModel)]="det.Articulo" class="form-input"></td>
+                    <td><input type="number" [(ngModel)]="det.Cantidad" class="form-input" (change)="calcularTotales()"></td>
+                    <td><input type="number" [(ngModel)]="det.Precio" class="form-input" (change)="calcularTotales()"></td>
+                    <td><input type="number" [(ngModel)]="det.Descuento_Porcentaje" class="form-input" (change)="calcularTotales()"></td>
+                    <td>{{ det.Importe_IVA | currency:'EUR' }}</td>
+                    <td>{{ det.Cantidad_Total | currency:'EUR' }}</td>
+                    <td><button class="btn btn-sm btn-secondary" (click)="removerDetalle(i)">🗑</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="totals-section mt-3 text-right" style="max-width: 400px; margin-left: auto;">
+              <p><strong>Cantidad:</strong> {{ nuevaFactura.Cantidad | currency:'EUR' }}</p>
+              <p><strong>Importe de IVA:</strong> {{ nuevaFactura.Importe_IVA | currency:'EUR' }}</p>
+              <p><strong>Cantidad total:</strong> {{ nuevaFactura.Cantidad_Total | currency:'EUR' }}</p>
+              <p><strong>Cantidad a pagar:</strong> {{ nuevaFactura.Cantidad_Pagar | currency:'EUR' }}</p>
+              <p><strong>Pagos:</strong> <input type="number" [(ngModel)]="nuevaFactura.Pagos" class="form-input inline-input" style="width:100px" (change)="calcularTotales()"></p>
+              <p><strong>Importe pendiente:</strong> {{ nuevaFactura.Importe_Pendiente | currency:'EUR' }}</p>
+            </div>
+
+            <div class="form-actions mt-3">
+              <button class="btn btn-primary" (click)="crearFactura()" [disabled]="creandoFactura">
+                {{ creandoFactura ? 'Guardando...' : 'Guardar Factura' }}
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
 
     </div>

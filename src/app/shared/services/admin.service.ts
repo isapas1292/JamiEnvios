@@ -89,4 +89,23 @@ export class AdminService {
     if (documento) params = params.set('documento', documento);
     return this.http.get<EmpleadoData[]>(`http://localhost:3000/api/empleados`, { params });
   }
+
+  createEnvio(envioData: any): Observable<any> {
+    return this.http.post(`http://localhost:3000/api/envios`, envioData);
+  }
+
+  createFactura(facturaData: any): Observable<any> {
+    return this.http.post(`http://localhost:3000/api/facturas`, facturaData);
+  }
+
+  getFacturas(filters?: any): Observable<any[]> {
+    let params = new HttpParams();
+    if (filters) {
+      if (filters.cliente) params = params.set('cliente', filters.cliente);
+      if (filters.numero) params = params.set('numero', filters.numero);
+      if (filters.fechaInicio) params = params.set('fechaInicio', filters.fechaInicio);
+      if (filters.fechaFin) params = params.set('fechaFin', filters.fechaFin);
+    }
+    return this.http.get<any[]>(`http://localhost:3000/api/facturas`, { params });
+  }
 }

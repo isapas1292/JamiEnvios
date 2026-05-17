@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
+import { RouterOutlet, Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +7,55 @@ import { RouterOutlet } from '@angular/router';
   imports: [RouterOutlet],
   template: `<router-outlet></router-outlet>`
 })
-export class AppComponent {}
+export class AppComponent implements OnInit, OnDestroy {
+  private timeoutId: any;
+  private readonly TIMEOUT_MS = 30 * 60 * 1000; // 30 minutes
+
+  constructor(private router: Router, private ngZone: NgZone) {}
+
+  ngOnInit() {
+    this.resetTimer();
+    this.setupListeners();
+  }
+
+  ngOnDestroy() {
+    this.removeListeners();
+    if (this.timeoutId) {
+      clearTimeout(this.timeoutId);
+    }
+  }
+
+  private setupListeners() {
+    this.ngZone.runOutsideAngular(() => {
+      window.addEventListener('mousemove', this.resetTimer.bind(this));
+      window.addEventListener('keydown', this.resetTimer.bind(this));
+      window.addEventListener('click', this.resetTimer.bind(this));
+      window.addEventListener('scroll', this.resetTimer.bind(this));
+    });
+  }
+
+  private removeListeners() {
+    window.removeEventListener('mousemove', this.resetTimer.bind(this));
+    window.removeEventListener('keydown', this.resetTimer.bind(this));
+    window.removeEventListener('click', this.resetTimer.bind(this));
+    window.removeEventListener('scroll', this.resetTimer.bind(this));
+  }
+
+  private resetTimer() {
+    if (this.timeoutId) {
+      clearTimeout(this.timeoutId);
+    }
+    this.ngZone.runOutsideAngular(() => {
+      this.timeoutId = setTimeout(() => {
+        this.ngZone.run(() => {
+          this.logout();
+        });
+      }, this.TIMEOUT_MS);
+    });
+  }
+
+  private logout() {
+    localStorage.removeItem('usuario');
+    this.router.navigate(['/login']);
+  }
+}
