@@ -239,4 +239,22 @@ export class Employee implements OnInit {
       }
     });
   }
+
+  onClienteSelectByNombre(formObj: any) {
+    if (!formObj.Nombre_Cliente) return;
+    const user = this.clientes.find(u => u.Nombre.toLowerCase() === formObj.Nombre_Cliente.toLowerCase());
+    if (user) {
+      if (!formObj.DocumentodeIdentidad && user.DocumentodeIdentidad) formObj.DocumentodeIdentidad = user.DocumentodeIdentidad;
+      if (formObj.hasOwnProperty('Telefono_Cliente') && !formObj.Telefono_Cliente && user.Phone) formObj.Telefono_Cliente = user.Phone;
+    }
+  }
+
+  onClienteSelectByDoc(formObj: any) {
+    if (!formObj.DocumentodeIdentidad) return;
+    const user = this.clientes.find(u => u.DocumentodeIdentidad === formObj.DocumentodeIdentidad);
+    if (user) {
+      if (!formObj.Nombre_Cliente && user.Nombre) formObj.Nombre_Cliente = user.Nombre;
+      if (formObj.hasOwnProperty('Telefono_Cliente') && !formObj.Telefono_Cliente && user.Phone) formObj.Telefono_Cliente = user.Phone;
+    }
+  }
 }

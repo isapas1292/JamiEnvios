@@ -142,11 +142,17 @@
         </div>
         <div class="form-group">
           <label>Nombre del Cliente *</label>
-          <input type="text" [(ngModel)]="nuevoEnvio.Nombre_Cliente" class="form-input" placeholder="Nombre completo">
+          <input type="text" [(ngModel)]="nuevoEnvio.Nombre_Cliente" name="EmpEnvioNombre" class="form-input" placeholder="Nombre completo" list="clientesListEnvio" (ngModelChange)="onClienteSelectByNombre(nuevoEnvio)">
+          <datalist id="clientesListEnvio">
+            <option *ngFor="let c of clientes" [value]="c.Nombre">{{ c.DocumentodeIdentidad ? 'DNI: ' + c.DocumentodeIdentidad : '' }}</option>
+          </datalist>
         </div>
         <div class="form-group">
           <label>DNI/Cédula Cliente</label>
-          <input type="text" [(ngModel)]="nuevoEnvio.DocumentodeIdentidad" class="form-input" placeholder="Documento de identidad">
+          <input type="text" [(ngModel)]="nuevoEnvio.DocumentodeIdentidad" name="EmpEnvioDoc" class="form-input" placeholder="Documento de identidad" list="docsListEnvioEmp" (ngModelChange)="onClienteSelectByDoc(nuevoEnvio)">
+          <datalist id="docsListEnvioEmp">
+            <option *ngFor="let c of clientes" [value]="c.DocumentodeIdentidad">{{ c.Nombre }}</option>
+          </datalist>
         </div>
         <div class="form-group">
           <label>Teléfono Cliente</label>

@@ -278,11 +278,17 @@
               </div>
               <div class="form-group">
                 <label>Nombre del Cliente *</label>
-                <input type="text" [(ngModel)]="nuevoEnvio.Nombre_Cliente" class="form-input" placeholder="Nombre completo">
+                <input type="text" [(ngModel)]="nuevoEnvio.Nombre_Cliente" name="Nombre_Cliente" class="form-input" placeholder="Nombre completo" list="usuariosListEnvio" (ngModelChange)="onUsuarioSelectByNombre(nuevoEnvio)">
+                <datalist id="usuariosListEnvio">
+                  <option *ngFor="let u of usuarios" [value]="u.Nombre">{{ u.DocumentodeIdentidad ? 'DNI: ' + u.DocumentodeIdentidad : '' }}</option>
+                </datalist>
               </div>
               <div class="form-group">
                 <label>DNI/Cédula Cliente</label>
-                <input type="text" [(ngModel)]="nuevoEnvio.DocumentodeIdentidad" class="form-input" placeholder="Documento de identidad">
+                <input type="text" [(ngModel)]="nuevoEnvio.DocumentodeIdentidad" name="DocumentodeIdentidad" class="form-input" placeholder="Documento de identidad" list="docsListEnvio" (ngModelChange)="onUsuarioSelectByDoc(nuevoEnvio)">
+                <datalist id="docsListEnvio">
+                  <option *ngFor="let u of usuarios" [value]="u.DocumentodeIdentidad">{{ u.Nombre }}</option>
+                </datalist>
               </div>
               <div class="form-group">
                 <label>Teléfono Cliente</label>
@@ -362,8 +368,20 @@
           <div class="card-header"><h2>Crear Factura</h2></div>
           <div class="card-body">
             <div class="form-grid">
-              <div class="form-group"><label>Cliente</label><input type="text" [(ngModel)]="nuevaFactura.Nombre_Cliente" class="form-input"></div>
-              <div class="form-group"><label>DNI/Cédula Cliente</label><input type="text" [(ngModel)]="nuevaFactura.DocumentodeIdentidad" class="form-input"></div>
+              <div class="form-group">
+                <label>Cliente</label>
+                <input type="text" [(ngModel)]="nuevaFactura.Nombre_Cliente" name="FacturaNombre" class="form-input" list="usuariosListFactura" (ngModelChange)="onUsuarioSelectByNombre(nuevaFactura)">
+                <datalist id="usuariosListFactura">
+                  <option *ngFor="let u of usuarios" [value]="u.Nombre">{{ u.DocumentodeIdentidad ? 'DNI: ' + u.DocumentodeIdentidad : '' }}</option>
+                </datalist>
+              </div>
+              <div class="form-group">
+                <label>DNI/Cédula Cliente</label>
+                <input type="text" [(ngModel)]="nuevaFactura.DocumentodeIdentidad" name="FacturaDoc" class="form-input" list="docsListFactura" (ngModelChange)="onUsuarioSelectByDoc(nuevaFactura)">
+                <datalist id="docsListFactura">
+                  <option *ngFor="let u of usuarios" [value]="u.DocumentodeIdentidad">{{ u.Nombre }}</option>
+                </datalist>
+              </div>
               <div class="form-group full-width"><label>Breve descripción</label><input type="text" [(ngModel)]="nuevaFactura.Breve_Descripcion" class="form-input"></div>
               
               <div class="form-group"><label>Fecha</label><input type="date" [(ngModel)]="nuevaFactura.Fecha" class="form-input"></div>

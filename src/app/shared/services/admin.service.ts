@@ -8,6 +8,7 @@ export interface AdminUsuario {
   Email: string;
   Phone: string;
   Rol_Id: number;
+  DocumentodeIdentidad?: string;
 }
 
 export interface EmpleadoData {
