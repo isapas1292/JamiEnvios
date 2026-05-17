@@ -362,8 +362,8 @@
           <div class="card-header"><h2>Crear Factura</h2></div>
           <div class="card-body">
             <div class="form-grid">
-              <div class="form-group"><label>Número de factura *</label><input type="text" [(ngModel)]="nuevaFactura.Numero_Factura" class="form-input"></div>
               <div class="form-group"><label>Cliente</label><input type="text" [(ngModel)]="nuevaFactura.Nombre_Cliente" class="form-input"></div>
+              <div class="form-group"><label>DNI/Cédula Cliente</label><input type="text" [(ngModel)]="nuevaFactura.Dni_Cliente" class="form-input"></div>
               <div class="form-group full-width"><label>Breve descripción</label><input type="text" [(ngModel)]="nuevaFactura.Breve_Descripcion" class="form-input"></div>
               
               <div class="form-group"><label>Fecha</label><input type="date" [(ngModel)]="nuevaFactura.Fecha" class="form-input"></div>
@@ -376,6 +376,7 @@
                   <option value="No pagado">No pagado</option>
                 </select>
               </div>
+              <div class="form-group"><label>Firma Cliente</label><input type="text" [(ngModel)]="nuevaFactura.Firma_Cliente" class="form-input" placeholder="Nombre de quien firma"></div>
             </div>
 
             <hr>

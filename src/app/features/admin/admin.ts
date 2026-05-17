@@ -318,10 +318,6 @@ export class Admin implements OnInit {
   }
 
   crearFactura() {
-    if (!this.nuevaFactura.Numero_Factura) {
-      alert('El número de factura es obligatorio.');
-      return;
-    }
     this.creandoFactura = true;
     this.adminService.createFactura(this.nuevaFactura).subscribe({
       next: () => {

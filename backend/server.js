@@ -440,7 +440,6 @@ app.post('/api/facturas', async (req, res) => {
 
         const request = new sql.Request();
         
-        request.input('numero', sql.VarChar, Numero_Factura);
         request.input('nombre', sql.VarChar, Nombre_Cliente);
         request.input('dni', sql.VarChar, Dni_Cliente || null);
         request.input('desc', sql.VarChar, Breve_Descripcion || null);
@@ -460,10 +459,10 @@ app.post('/api/facturas', async (req, res) => {
 
         const result = await request.query(`
             INSERT INTO Facturas 
-            (Numero_Factura, Nombre_Cliente, Dni_Cliente, Breve_Descripcion, Fecha, Vencimiento, Fecha_Pago, Estatus, Cerrado, Cobrar_IVA, Firma_Cliente, Cantidad, Importe_IVA, Cantidad_Total, Cantidad_Pagar, Pagos, Importe_Pendiente)
+            (Nombre_Cliente, Dni_Cliente, Breve_Descripcion, Fecha, Vencimiento, Fecha_Pago, Estatus, Cerrado, Cobrar_IVA, Firma_Cliente, Cantidad, Importe_IVA, Cantidad_Total, Cantidad_Pagar, Pagos, Importe_Pendiente)
             OUTPUT INSERTED.Id
             VALUES 
-            (@numero, @nombre, @dni, @desc, @fecha, @vencimiento, @fechaPago, @estatus, @cerrado, @cobrarIva, @firma, @cantidad, @importeIva, @cantidadTotal, @cantidadPagar, @pagos, @pendiente)
+            (@nombre, @dni, @desc, @fecha, @vencimiento, @fechaPago, @estatus, @cerrado, @cobrarIva, @firma, @cantidad, @importeIva, @cantidadTotal, @cantidadPagar, @pagos, @pendiente)
         `);
         
         const facturaId = result.recordset[0].Id;
