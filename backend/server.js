@@ -447,16 +447,30 @@ app.post('/api/envios', async (req, res) => {
 app.post('/api/facturas', async (req, res) => {
     try {
         const {
-            Numero_Factura, Nombre_Cliente, Dni_Cliente, Breve_Descripcion,
+            Nombre_Cliente, DocumentodeIdentidad, Breve_Descripcion,
             Fecha, Vencimiento, Fecha_Pago, Estatus, Cerrado, Cobrar_IVA,
             Firma_Cliente, Cantidad, Importe_IVA, Cantidad_Total,
             Cantidad_Pagar, Pagos, Importe_Pendiente, Detalles
         } = req.body;
 
+        let clienteUsuarioId = null;
+
+        if (DocumentodeIdentidad && Nombre_Cliente) {
+            const checkUserRequest = new sql.Request();
+            checkUserRequest.input('doc', sql.VarChar, DocumentodeIdentidad);
+            checkUserRequest.input('nombre', sql.VarChar, Nombre_Cliente);
+            const userRes = await checkUserRequest.query(`
+                SELECT Id FROM Usuarios WHERE DocumentodeIdentidad = @doc AND Nombre = @nombre
+            `);
+            if (userRes.recordset.length > 0) {
+                clienteUsuarioId = userRes.recordset[0].Id;
+            }
+        }
+
         const request = new sql.Request();
         
         request.input('nombre', sql.VarChar, Nombre_Cliente);
-        request.input('dni', sql.VarChar, Dni_Cliente || null);
+        request.input('doc', sql.VarChar, DocumentodeIdentidad || null);
         request.input('desc', sql.VarChar, Breve_Descripcion || null);
         request.input('fecha', sql.Date, Fecha || null);
         request.input('vencimiento', sql.Date, Vencimiento || null);
@@ -471,13 +485,14 @@ app.post('/api/facturas', async (req, res) => {
         request.input('cantidadPagar', sql.Decimal(18,2), Cantidad_Pagar || 0);
         request.input('pagos', sql.Decimal(18,2), Pagos || 0);
         request.input('pendiente', sql.Decimal(18,2), Importe_Pendiente || 0);
+        request.input('usuarioId', sql.Int, clienteUsuarioId);
 
         const result = await request.query(`
             INSERT INTO Facturas 
-            (Nombre_Cliente, Dni_Cliente, Breve_Descripcion, Fecha, Vencimiento, Fecha_Pago, Estatus, Cerrado, Cobrar_IVA, Firma_Cliente, Cantidad, Importe_IVA, Cantidad_Total, Cantidad_Pagar, Pagos, Importe_Pendiente)
+            (Nombre_Cliente, DocumentodeIdentidad, Breve_Descripcion, Fecha, Vencimiento, Fecha_Pago, Estatus, Cerrado, Cobrar_IVA, Firma_Cliente, Cantidad, Importe_IVA, Cantidad_Total, Cantidad_Pagar, Pagos, Importe_Pendiente, Usuario_Id)
             OUTPUT INSERTED.Id
             VALUES 
-            (@nombre, @dni, @desc, @fecha, @vencimiento, @fechaPago, @estatus, @cerrado, @cobrarIva, @firma, @cantidad, @importeIva, @cantidadTotal, @cantidadPagar, @pagos, @pendiente)
+            (@nombre, @doc, @desc, @fecha, @vencimiento, @fechaPago, @estatus, @cerrado, @cobrarIva, @firma, @cantidad, @importeIva, @cantidadTotal, @cantidadPagar, @pagos, @pendiente, @usuarioId)
         `);
         
         const facturaId = result.recordset[0].Id;
