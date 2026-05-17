@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { RouterOutlet, Router } from '@angular/router';
+import { AuthService } from './shared/services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -11,7 +12,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private timeoutId: any;
   private readonly TIMEOUT_MS = 30 * 60 * 1000; // 30 minutes
 
-  constructor(private router: Router, private ngZone: NgZone) {}
+  constructor(private router: Router, private ngZone: NgZone, private authService: AuthService) {}
 
   ngOnInit() {
     this.resetTimer();
@@ -55,7 +56,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   private logout() {
-    localStorage.removeItem('usuario');
+    this.authService.logout();
     this.router.navigate(['/login']);
   }
 }

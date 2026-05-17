@@ -28,16 +28,46 @@ export class AuthService {
   public currentUser$ = this.currentUserSubject.asObservable();
 
   constructor(private http: HttpClient) {
-    // Recuperar usuario del localStorage si existe (solo en el navegador)
+    // Recuperar usuario del localStorage si existe y si no han pasado 15 días
     if (typeof window !== 'undefined' && localStorage) {
       const savedUser = localStorage.getItem('currentUser');
-      if (savedUser) {
+      const loginTimestamp = localStorage.getItem('loginTimestamp');
+      
+      if (savedUser && loginTimestamp) {
+        const fifteenDaysInMs = 15 * 24 * 60 * 60 * 1000;
+        const timePassed = Date.now() - parseInt(loginTimestamp, 10);
+        
+        if (timePassed > fifteenDaysInMs) {
+          // Session expired after 15 days
+          localStorage.removeItem('currentUser');
+          localStorage.removeItem('loginTimestamp');
+        } else {
+          try {
+            this.currentUserSubject.next(JSON.parse(savedUser));
+            this.scheduleLogout(fifteenDaysInMs - timePassed);
+          } catch (e) {
+            console.error('Error parsing saved user:', e);
+          }
+        }
+      } else if (savedUser) {
+        // Fallback for users who logged in before we added timestamp
         try {
           this.currentUserSubject.next(JSON.parse(savedUser));
+          localStorage.setItem('loginTimestamp', Date.now().toString());
+          this.scheduleLogout(15 * 24 * 60 * 60 * 1000);
         } catch (e) {
           console.error('Error parsing saved user:', e);
         }
       }
+    }
+  }
+
+  private scheduleLogout(msUntilLogout: number) {
+    if (typeof window !== 'undefined') {
+      setTimeout(() => {
+        this.logout();
+        // Option to reload or redirect can be handled by components listening to currentUser$
+      }, msUntilLogout);
     }
   }
 
@@ -67,6 +97,8 @@ export class AuthService {
         if (response && response.usuario) {
           if (typeof window !== 'undefined' && localStorage) {
             localStorage.setItem('currentUser', JSON.stringify(response.usuario));
+            localStorage.setItem('loginTimestamp', Date.now().toString());
+            this.scheduleLogout(15 * 24 * 60 * 60 * 1000);
           }
           this.currentUserSubject.next(response.usuario);
         }
@@ -78,6 +110,8 @@ export class AuthService {
   logout(): void {
     if (typeof window !== 'undefined' && localStorage) {
       localStorage.removeItem('currentUser');
+      localStorage.removeItem('loginTimestamp');
+      localStorage.removeItem('usuario');
     }
     this.currentUserSubject.next(null);
   }

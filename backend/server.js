@@ -400,28 +400,43 @@ app.post('/api/empleados', async (req, res) => {
 app.post('/api/envios', async (req, res) => {
     try {
         const {
-            Numero_Guia, Nombre_Cliente, Dni_Cliente, Telefono_Cliente,
+            Numero_Guia, Nombre_Cliente, DocumentodeIdentidad, Telefono_Cliente,
             Destino, Observaciones, Nombre_Recibe, Cedula_Recibe,
-            Telefono_Recibe, Usuario_Id
+            Telefono_Recibe
         } = req.body;
+
+        let clienteUsuarioId = null;
+
+        // Verify if user exists with DocumentodeIdentidad and Nombre
+        if (DocumentodeIdentidad && Nombre_Cliente) {
+            const checkUserRequest = new sql.Request();
+            checkUserRequest.input('doc', sql.VarChar, DocumentodeIdentidad);
+            checkUserRequest.input('nombre', sql.VarChar, Nombre_Cliente);
+            const userRes = await checkUserRequest.query(`
+                SELECT Id FROM Usuarios WHERE DocumentodeIdentidad = @doc AND Nombre = @nombre
+            `);
+            if (userRes.recordset.length > 0) {
+                clienteUsuarioId = userRes.recordset[0].Id;
+            }
+        }
 
         const request = new sql.Request();
         request.input('guia', sql.VarChar, Numero_Guia);
         request.input('cliente', sql.VarChar, Nombre_Cliente);
-        request.input('dni', sql.VarChar, Dni_Cliente || null);
+        request.input('doc', sql.VarChar, DocumentodeIdentidad || null);
         request.input('telefono', sql.VarChar, Telefono_Cliente || null);
         request.input('destino', sql.VarChar, Destino);
         request.input('obs', sql.VarChar, Observaciones || '');
         request.input('recibe', sql.VarChar, Nombre_Recibe || null);
         request.input('cedula', sql.VarChar, Cedula_Recibe || null);
         request.input('telefonoRecibe', sql.VarChar, Telefono_Recibe || null);
-        request.input('usuarioId', sql.Int, Usuario_Id || 1); // User ID or default
+        request.input('usuarioId', sql.Int, clienteUsuarioId); 
 
         await request.query(`
             INSERT INTO Envios 
-            (Numero_Guia, Nombre_Cliente, Dni_Cliente, Telefono_Cliente, Destino, Observaciones, Nombre_Recibe, Cedula_Recibe, Telefono_Recibe, Usuario_Id, Fecha_Recepcion, Estado_Envio_Id, Estado_Actual) 
+            (Numero_Guia, Nombre_Cliente, DocumentodeIdentidad, Telefono_Cliente, Destino, Observaciones, Nombre_Recibe, Cedula_Recibe, Telefono_Recibe, Usuario_Id, Fecha_Recepcion, Estado_Envio_Id, Estado_Actual) 
             VALUES 
-            (@guia, @cliente, @dni, @telefono, @destino, @obs, @recibe, @cedula, @telefonoRecibe, @usuarioId, GETDATE(), 1, 'Pendiente')
+            (@guia, @cliente, @doc, @telefono, @destino, @obs, @recibe, @cedula, @telefonoRecibe, @usuarioId, GETDATE(), 1, 'Pendiente')
         `);
         res.json({ mensaje: "Envío creado correctamente" });
     } catch (err) {
