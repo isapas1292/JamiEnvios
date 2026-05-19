@@ -434,9 +434,9 @@ app.post('/api/envios', async (req, res) => {
 
         await request.query(`
             INSERT INTO Envios 
-            (Numero_Guia, Nombre_Cliente, DocumentodeIdentidad, Telefono_Cliente, Destino, Observaciones, Nombre_Recibe, Cedula_Recibe, Telefono_Recibe, Usuario_Id, Fecha_Recepcion, Estado_Envio_Id, Estado_Actual) 
+            (Numero_Guia, Nombre_Cliente, DocumentodeIdentidad, Telefono_Cliente, Destino, Observaciones, Nombre_Recibe, Cedula_Recibe, Telefono_Recibe, Usuario_Id, Fecha_Recepcion, Estado_Envio_Id) 
             VALUES 
-            (@guia, @cliente, @doc, @telefono, @destino, @obs, @recibe, @cedula, @telefonoRecibe, @usuarioId, GETDATE(), 1, 'Pendiente')
+            (@guia, @cliente, @doc, @telefono, @destino, @obs, @recibe, @cedula, @telefonoRecibe, @usuarioId, GETDATE(), 1)
         `);
         res.json({ mensaje: "Envío creado correctamente" });
     } catch (err) {
