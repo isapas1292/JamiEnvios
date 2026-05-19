@@ -342,8 +342,8 @@ export class Admin implements OnInit {
 
   // --- Crear Envio ---
   crearEnvioAdmin() {
-    if (!this.nuevoEnvio.Numero_Guia || !this.nuevoEnvio.Nombre_Cliente || !this.nuevoEnvio.Destino) {
-      alert('Número de guía, Nombre del cliente y Destino son obligatorios.');
+    if (!this.nuevoEnvio.Nombre_Cliente || !this.nuevoEnvio.Destino) {
+      alert('Nombre del cliente y Destino son obligatorios.');
       return;
     }
     

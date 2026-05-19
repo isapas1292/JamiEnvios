@@ -137,8 +137,8 @@
     <div class="card-body">
       <div class="form-grid">
         <div class="form-group">
-          <label>N° Guía *</label>
-          <input type="text" [(ngModel)]="nuevoEnvio.Numero_Guia" class="form-input" placeholder="Ej. G-12345">
+          <label>N° Guía (Autogenerado)</label>
+          <input type="text" [value]="'Generado automáticamente'" class="form-input" disabled>
         </div>
         <div class="form-group">
           <label>Nombre del Cliente *</label>

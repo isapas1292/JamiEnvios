@@ -317,14 +317,14 @@ app.put('/api/envios/:id/estado', async (req, res) => {
 app.put('/api/admin/envios/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const { Numero_Guia, Nombre_Cliente, Dni_Cliente, Telefono_Cliente, Estado_Envio_Id, Destino, Observaciones, Nombre_Recibe, Cedula_Recibe, Telefono_Recibe } = req.body;
+        const { Numero_Guia, Nombre_Cliente, DocumentodeIdentidad, Telefono_Cliente, Estado_Envio_Id, Destino, Observaciones, Nombre_Recibe, Cedula_Recibe, Telefono_Recibe } = req.body;
 
         const request = new sql.Request();
         // 2. Usamos parámetros (.input) por seguridad y para manejar Nulllos
         request.input('id', sql.Int, id);
         request.input('guia', sql.VarChar, Numero_Guia);
         request.input('cliente', sql.VarChar, Nombre_Cliente);
-        request.input('dni', sql.VarChar, Dni_Cliente || null);
+        request.input('doc', sql.VarChar, DocumentodeIdentidad || null);
         request.input('telefono', sql.VarChar, Telefono_Cliente || null);
         request.input('estadoId', sql.Int, Estado_Envio_Id);
         request.input('destino', sql.VarChar, Destino);
@@ -336,7 +336,7 @@ app.put('/api/admin/envios/:id', async (req, res) => {
             UPDATE Envios 
             SET Numero_Guia = @guia, 
                 Nombre_Cliente = @cliente, 
-                Dni_Cliente = @dni,
+                DocumentodeIdentidad = @doc,
                 Telefono_Cliente = @telefono,
                 Estado_Envio_Id = @estadoId, 
                 Destino = @destino, 
@@ -400,7 +400,7 @@ app.post('/api/empleados', async (req, res) => {
 app.post('/api/envios', async (req, res) => {
     try {
         const {
-            Numero_Guia, Nombre_Cliente, DocumentodeIdentidad, Telefono_Cliente,
+            Nombre_Cliente, DocumentodeIdentidad, Telefono_Cliente,
             Destino, Observaciones, Nombre_Recibe, Cedula_Recibe,
             Telefono_Recibe
         } = req.body;
@@ -420,8 +420,29 @@ app.post('/api/envios', async (req, res) => {
             }
         }
 
+        // Generar Numero_Guia automáticamente (JAM-0001, JAM-0002, ...)
+        const requestGuia = new sql.Request();
+        const resGuia = await requestGuia.query(`
+            SELECT TOP 1 Numero_Guia 
+            FROM Envios 
+            WHERE Numero_Guia LIKE 'JAM-%'
+            ORDER BY Id DESC
+        `);
+        
+        let nuevoNumeroGuia = 'JAM-0001';
+        if (resGuia.recordset.length > 0) {
+            const ultimaGuia = resGuia.recordset[0].Numero_Guia; // e.g., 'JAM-0005'
+            const partes = ultimaGuia.split('-');
+            if (partes.length === 2) {
+                const numeroInt = parseInt(partes[1], 10);
+                if (!isNaN(numeroInt)) {
+                    nuevoNumeroGuia = 'JAM-' + String(numeroInt + 1).padStart(4, '0');
+                }
+            }
+        }
+
         const request = new sql.Request();
-        request.input('guia', sql.VarChar, Numero_Guia);
+        request.input('guia', sql.VarChar, nuevoNumeroGuia);
         request.input('cliente', sql.VarChar, Nombre_Cliente);
         request.input('doc', sql.VarChar, DocumentodeIdentidad || null);
         request.input('telefono', sql.VarChar, Telefono_Cliente || null);
@@ -438,7 +459,7 @@ app.post('/api/envios', async (req, res) => {
             VALUES 
             (@guia, @cliente, @doc, @telefono, @destino, @obs, @recibe, @cedula, @telefonoRecibe, @usuarioId, GETDATE(), 1)
         `);
-        res.json({ mensaje: "Envío creado correctamente" });
+        res.json({ mensaje: "Envío creado correctamente", Numero_Guia: nuevoNumeroGuia });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

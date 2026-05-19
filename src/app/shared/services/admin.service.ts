@@ -27,7 +27,7 @@ export interface AdminEnvio {
   Id: number;
   Numero_Guia: string;
   Nombre_Cliente: string;
-  Dni_Cliente?: string;
+  DocumentodeIdentidad?: string;
   Telefono_Cliente?: string;
   Fecha_Recepcion: string;
   Estado_Actual?: string;

@@ -19,7 +19,7 @@ sql.connect(config).then(async () => {
                 Numero_Guia VARCHAR(100),
                 Nombre_Cliente VARCHAR(150),
                 DocumentodeIdentidad VARCHAR(50),
-                Dni_Cliente VARCHAR(50),
+
                 Telefono_Cliente VARCHAR(50),
                 Destino VARCHAR(255),
                 Direccion VARCHAR(255),
