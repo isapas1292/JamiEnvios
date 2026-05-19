@@ -415,9 +415,9 @@
                 <tbody>
                   <tr *ngFor="let det of nuevaFactura.Detalles; let i = index">
                     <td><input type="text" [(ngModel)]="det.Articulo" class="form-input"></td>
-                    <td><input type="number" [(ngModel)]="det.Cantidad" class="form-input" (change)="calcularTotales()"></td>
-                    <td><input type="number" [(ngModel)]="det.Precio" class="form-input" (change)="calcularTotales()"></td>
-                    <td><input type="number" [(ngModel)]="det.Descuento_Porcentaje" class="form-input" (change)="calcularTotales()"></td>
+                    <td><input type="number" [(ngModel)]="det.Cantidad" class="form-input" (ngModelChange)="calcularTotales()"></td>
+                    <td><input type="number" [(ngModel)]="det.Precio" class="form-input" (ngModelChange)="calcularTotales()"></td>
+                    <td><input type="number" [(ngModel)]="det.Descuento_Porcentaje" class="form-input" (ngModelChange)="calcularTotales()"></td>
                     <td>{{ det.Importe_IVA | currency:'EUR' }}</td>
                     <td>{{ det.Cantidad_Total | currency:'EUR' }}</td>
                     <td><button class="btn btn-sm btn-secondary" (click)="removerDetalle(i)">🗑</button></td>
@@ -431,7 +431,7 @@
               <p><strong>Importe de IVA:</strong> {{ nuevaFactura.Importe_IVA | currency:'EUR' }}</p>
               <p><strong>Cantidad total:</strong> {{ nuevaFactura.Cantidad_Total | currency:'EUR' }}</p>
               <p><strong>Cantidad a pagar:</strong> {{ nuevaFactura.Cantidad_Pagar | currency:'EUR' }}</p>
-              <p><strong>Pagos:</strong> <input type="number" [(ngModel)]="nuevaFactura.Pagos" class="form-input inline-input" style="width:100px" (change)="calcularTotales()"></p>
+              <p><strong>Pagos:</strong> <input type="number" [(ngModel)]="nuevaFactura.Pagos" class="form-input inline-input" style="width:100px" (ngModelChange)="calcularTotales()"></p>
               <p><strong>Importe pendiente:</strong> {{ nuevaFactura.Importe_Pendiente | currency:'EUR' }}</p>
             </div>
 

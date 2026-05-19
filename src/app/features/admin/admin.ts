@@ -301,10 +301,16 @@ export class Admin implements OnInit {
     let subtotal = 0;
     let totalIva = 0;
     for (let det of this.nuevaFactura.Detalles) {
-      let desc = (det.Precio * (det.Descuento_Porcentaje || 0)) / 100;
-      let precioConDesc = det.Precio - desc;
-      let importe = precioConDesc * (det.Cantidad || 1);
-      det.Importe_IVA = (importe * (det.Iva_Porcentaje || 0)) / 100; 
+      let precio = Number(det.Precio) || 0;
+      let descPerc = Number(det.Descuento_Porcentaje) || 0;
+      let cantidad = Number(det.Cantidad) || 1;
+      
+      let desc = (precio * descPerc) / 100;
+      let precioConDesc = precio - desc;
+      let importe = precioConDesc * cantidad;
+      
+      let ivaPerc = Number(det.Iva_Porcentaje) || 0; // if this is not in UI, defaults to 0
+      det.Importe_IVA = (importe * ivaPerc) / 100; 
       det.Cantidad_Total = importe + det.Importe_IVA;
 
       subtotal += importe;
@@ -313,8 +319,8 @@ export class Admin implements OnInit {
     this.nuevaFactura.Cantidad = subtotal;
     this.nuevaFactura.Importe_IVA = totalIva;
     this.nuevaFactura.Cantidad_Total = subtotal + totalIva;
-    this.nuevaFactura.Cantidad_Pagar = this.nuevaFactura.Cantidad_Total; // Assuming no pagos previos at creation
-    this.nuevaFactura.Importe_Pendiente = this.nuevaFactura.Cantidad_Pagar - (this.nuevaFactura.Pagos || 0);
+    this.nuevaFactura.Cantidad_Pagar = this.nuevaFactura.Cantidad_Total; 
+    this.nuevaFactura.Importe_Pendiente = this.nuevaFactura.Cantidad_Pagar - (Number(this.nuevaFactura.Pagos) || 0);
   }
 
   crearFactura() {
