@@ -11,8 +11,8 @@ app.use(express.json());
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: 'wesles0631@gmail.com',
-        pass: 'bniw yscc druz latp' // Contraseña de aplicación de Gmail
+        user: 'jami870@gmail.com',
+        pass: 'pcry uflr bctc izla' // Contraseña de aplicación de Gmail
     }
 });
 
@@ -28,7 +28,44 @@ const config = {
 };
 
 sql.connect(config)
-    .then(() => console.log("Conectado a SQL Server"))
+    .then(async () => {
+        console.log("Conectado a SQL Server");
+        try {
+            const request = new sql.Request();
+            // Verificar si la tabla Roles existe y tiene filas
+            let count = 0;
+            try {
+                const result = await request.query('SELECT COUNT(*) AS cnt FROM Roles');
+                count = result.recordset && result.recordset[0] ? result.recordset[0].cnt : 0;
+            } catch (e) {
+                // Si la tabla no existe, intentaremos crearla más abajo al insertar
+                count = 0;
+            }
+
+            if (!count || count === 0) {
+                console.log('Roles table empty or missing — seeding default roles');
+                // Crear tabla Roles si no existe
+                await request.query(`IF OBJECT_ID('Roles', 'U') IS NULL
+BEGIN
+    CREATE TABLE Roles (
+        Id INT IDENTITY(1,1) PRIMARY KEY,
+        Nombre VARCHAR(255) NOT NULL
+    );
+END`);
+
+                // Insertar roles con Ids concretos para mantener compatibilidad (1=Cliente,2=Administrador,4=Empleado)
+                await request.query(`SET IDENTITY_INSERT Roles ON;
+                    INSERT INTO Roles (Id, Nombre) VALUES (1, 'Cliente'), (2, 'Administrador'), (4, 'Empleado');
+                    SET IDENTITY_INSERT Roles OFF;`);
+
+                // Reseed identity al máximo Id actual
+                await request.query(`DECLARE @mx INT; SELECT @mx = MAX(Id) FROM Roles; DBCC CHECKIDENT('Roles', RESEED, ISNULL(@mx, 0));`);
+                console.log('Default roles seeded');
+            }
+        } catch (err) {
+            console.error('Error seeding roles:', err && err.message ? err.message : err);
+        }
+    })
     .catch(err => console.log(err));
 
 app.get('/usuarios', async (req, res) => {
@@ -113,7 +150,7 @@ app.post('/enviar-contacto', async (req, res) => {
 
         // Correo para el usuario
         const mailToUser = {
-            from: 'wesles0631@gmail.com',
+            from: 'jami870@gmail.com',
             to: email,
             subject: 'Hemos recibido tu solicitud - Grupo JAMI Envíos',
             html: `
@@ -139,8 +176,8 @@ app.post('/enviar-contacto', async (req, res) => {
 
         // Correo para el admin
         const mailToAdmin = {
-            from: 'wesles0631@gmail.com',
-            to: 'wesles0631@gmail.com',
+            from: 'jami870@gmail.com',
+            to: 'jami870@gmail.com',
             subject: 'Nueva solicitud de contacto - ' + name,
             html: `
                 <h2>Nueva solicitud de contacto</h2>
