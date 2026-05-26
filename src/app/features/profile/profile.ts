@@ -33,7 +33,10 @@ export class Profile implements OnInit {
 
   loadHistorial() {
     this.loading = true;
-    this.adminService.getEnvios({ usuarioId: this.user?.id }).subscribe({
+    const isCustomer = this.user?.rol_id === 1;
+    const filters = isCustomer ? { usuarioId: this.user?.id } : undefined;
+
+    this.adminService.getEnvios(filters).subscribe({
       next: (data) => {
         this.ngZone.run(() => {
           this.envios = data;

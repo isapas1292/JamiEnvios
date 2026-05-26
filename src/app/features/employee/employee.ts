@@ -213,16 +213,9 @@ export class Employee implements OnInit {
       return;
     }
     
-    // Asignar Usuario_Id usando el usuario en sesión si aplica, o uno por defecto
-    const usuarioStr = localStorage.getItem('usuario');
-    if (usuarioStr) {
-      try {
-        const u = JSON.parse(usuarioStr);
-        this.nuevoEnvio.Usuario_Id = u.id || 1;
-      } catch (e) {
-        this.nuevoEnvio.Usuario_Id = 1;
-      }
-    }
+    // Asignar Usuario_Id usando el usuario autenticado actual si aplica
+    const currentUser = this.authService.getCurrentUser();
+    this.nuevoEnvio.Usuario_Id = currentUser?.id || 1;
 
     this.creandoEnvio = true;
     this.adminService.createEnvio(this.nuevoEnvio).subscribe({

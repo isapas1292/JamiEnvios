@@ -54,13 +54,83 @@ BEGIN
 END`);
 
                 // Insertar roles con Ids concretos para mantener compatibilidad (1=Cliente,2=Administrador,4=Empleado)
-                await request.query(`SET IDENTITY_INSERT Roles ON;
-                    INSERT INTO Roles (Id, Nombre) VALUES (1, 'Cliente'), (2, 'Administrador'), (4, 'Empleado');
-                    SET IDENTITY_INSERT Roles OFF;`);
+                await request.query(`
+                    SET IDENTITY_INSERT Roles ON;
+                    INSERT INTO Roles (Id, Nombre) VALUES
+                        (1, 'Cliente'),
+                        (2, 'Administrador'),
+                        (4, 'Empleado');
+                    SET IDENTITY_INSERT Roles OFF;
+                `);
 
                 // Reseed identity al máximo Id actual
                 await request.query(`DECLARE @mx INT; SELECT @mx = MAX(Id) FROM Roles; DBCC CHECKIDENT('Roles', RESEED, ISNULL(@mx, 0));`);
                 console.log('Default roles seeded');
+            }
+
+            // Ensure Envios has the current schema expected by the app
+            try {
+                const enviosColsResult = await request.query(`
+                    SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
+                    WHERE TABLE_NAME = 'Envios'
+                `);
+                const enviosCols = enviosColsResult.recordset.map(r => r.COLUMN_NAME);
+                const requiredEnviosColumns = [
+                    'Numero_Guia', 'Nombre_Cliente', 'DocumentodeIdentidad',
+                    'Telefono_Cliente', 'Destino', 'Observaciones', 'Nombre_Recibe',
+                    'Cedula_Recibe', 'Telefono_Recibe', 'Usuario_Id', 'Fecha_Recepcion', 'Estado_Envio_Id'
+                ];
+                const missingColumns = requiredEnviosColumns.filter(c => !enviosCols.includes(c));
+
+                if (missingColumns.length > 0) {
+                    console.warn('Envios table schema mismatch. Recreating Envios table with the expected columns.');
+                    await request.query(`
+                        IF OBJECT_ID('Envios', 'U') IS NOT NULL DROP TABLE Envios;
+                        CREATE TABLE Envios (
+                            Id INT IDENTITY(1,1) PRIMARY KEY,
+                            Numero_Guia VARCHAR(100),
+                            Nombre_Cliente VARCHAR(150),
+                            DocumentodeIdentidad VARCHAR(50),
+                            Telefono_Cliente VARCHAR(50),
+                            Destino VARCHAR(255),
+                            Observaciones VARCHAR(MAX),
+                            Nombre_Recibe VARCHAR(150),
+                            Cedula_Recibe VARCHAR(50),
+                            Telefono_Recibe VARCHAR(50),
+                            Usuario_Id INT,
+                            Fecha_Recepcion DATETIME,
+                            Estado_Envio_Id INT
+                        );
+                    `);
+                    console.log('Envios table recreated with expected schema.');
+                }
+            } catch (schemaErr) {
+                console.warn('Failed checking or recreating Envios table schema:', schemaErr && schemaErr.message ? schemaErr.message : schemaErr);
+            }
+
+            try {
+                await request.query(`
+                    IF OBJECT_ID('Facturas', 'U') IS NOT NULL
+                    BEGIN
+                        IF EXISTS (
+                            SELECT 1 FROM sys.columns
+                            WHERE object_id = OBJECT_ID('Facturas', 'U') AND name = 'Numero_Factura' AND is_computed = 0
+                        )
+                        BEGIN
+                            ALTER TABLE Facturas DROP COLUMN Numero_Factura;
+                        END
+
+                        IF NOT EXISTS (
+                            SELECT 1 FROM sys.columns
+                            WHERE object_id = OBJECT_ID('Facturas', 'U') AND name = 'Numero_Factura'
+                        )
+                        BEGIN
+                            ALTER TABLE Facturas ADD Numero_Factura AS RIGHT('0000' + CAST(Id AS VARCHAR(50)), 4) PERSISTED;
+                        END
+                    END
+                `);
+            } catch (facturasErr) {
+                console.warn('Failed checking or migrating Facturas.Numero_Factura:', facturasErr && facturasErr.message ? facturasErr.message : facturasErr);
             }
         } catch (err) {
             console.error('Error seeding roles:', err && err.message ? err.message : err);
@@ -576,7 +646,12 @@ app.post('/api/facturas', async (req, res) => {
             }
         }
 
-        res.json({ mensaje: "Factura creada correctamente", Id: facturaId });
+        const facturaNumResult = await new sql.Request().query(`
+            SELECT Numero_Factura FROM Facturas WHERE Id = ${facturaId}
+        `);
+        const numeroFactura = facturaNumResult.recordset[0]?.Numero_Factura;
+
+        res.json({ mensaje: "Factura creada correctamente", Id: facturaId, Numero_Factura: numeroFactura });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
