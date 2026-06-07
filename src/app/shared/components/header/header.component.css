@@ -24,7 +24,7 @@
 }
 
 .brand-logo {
-  width: 110px;
+  width: 160px;
   height: auto;
   object-fit: contain;
 }
@@ -36,14 +36,14 @@
 
 .brand-title {
   color: var(--blue);
-  font-size: 1.1rem;
+  font-size: 1.5rem;
   font-weight: 900;
   line-height: 1;
 }
 
 .brand-subtitle {
   color: var(--muted);
-  font-size: 0.78rem;
+  font-size: 0.9rem;
   margin-top: 4px;
 }
 
